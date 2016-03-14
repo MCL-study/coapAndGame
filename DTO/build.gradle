@@ -1,0 +1,29 @@
+group 'sylphe'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin:'application'
+
+mainClassName = 'com.sylphe.DTO'
+sourceCompatibility = 1.5
+version = '1.0'
+
+jar {
+    manifest {
+        attributes  'Title': 'DTO', 'Version': version, 'Main-Class': mainClassName
+    }
+    archiveName 'DTO.jar'
+    dependsOn configurations.runtime
+    from {
+        configurations.compile.collect {it.isDirectory()? it: zipTree(it)}
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile 'junit:junit:4.11'
+}
