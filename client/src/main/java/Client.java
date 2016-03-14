@@ -10,18 +10,15 @@ import java.net.URI;
  */
 public class Client {
     private boolean aliveFlag;
-    private CoapObserveRelation relation;
     private final Login login;
-    private final CoapClient obsClient;
 
     public Client(URI uri){
         aliveFlag=true;
         login = new Login(uri);
-        obsClient = new CoapClient(uri + "/obsRoom");
+
     }
 
     public void close(){
-        relation.reactiveCancel();
         aliveFlag = false;
     }
 
@@ -32,26 +29,12 @@ public class Client {
     private void login(){
         login.requestID();
     }
-    private void obsTest(){
-        relation = obsClient.observe(new handler());
-    }
+
 
     public void process(){
         login();
-        obsTest();
     }
 
-    class handler implements CoapHandler {
-        public void onLoad(CoapResponse response) {
 
-            String content = response.getResponseText();
-          //  System.out.println("-CO01----------");
-           // System.out.println(content);
-
-        }
-        public void onError() {
-            System.err.println("-Failed--------");
-        }
-    }
 
 }
