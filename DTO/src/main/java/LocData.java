@@ -5,7 +5,6 @@ import java.nio.ByteOrder;
  * Created by myks7 on 2016-03-13.
  */
 public class LocData {
-    public static final byte format = 101;
     private Double lat, lng;
 
     public LocData(double lat, double lng){
@@ -13,16 +12,16 @@ public class LocData {
         this.lng = lng;
     }
 
-    public byte[] getByteData(){
-        byte[] bytes = new byte[17];
-        bytes[0] = format;
-        doubleToBytes_LE(lat,bytes,1);
-        doubleToBytes_LE(lng,bytes,9);
-        return bytes;
-    }
     public LocData(byte[] bytes){
-        lat = ByteBuffer.wrap(bytes, 1, 8).order(ByteOrder.LITTLE_ENDIAN).getDouble();
-        lng = ByteBuffer.wrap(bytes, 9, 8).order(ByteOrder.LITTLE_ENDIAN).getDouble();
+        lat = ByteBuffer.wrap(bytes, 0, 8).order(ByteOrder.LITTLE_ENDIAN).getDouble();
+        lng = ByteBuffer.wrap(bytes, 8, 8).order(ByteOrder.LITTLE_ENDIAN).getDouble();
+    }
+
+    public byte[] getByteStream(){
+        byte[] bytes = new byte[16];
+        doubleToBytes_LE(lat,bytes,0);
+        doubleToBytes_LE(lng,bytes,8);
+        return bytes;
     }
 
     public double getLat() {

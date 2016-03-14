@@ -39,15 +39,12 @@ public class HelloWorldServer extends CoapServer {
      * Application entry point.
      */
     public static void main(String[] args) {
-        
         try {
-
             // create server
             HelloWorldServer server = new HelloWorldServer();
             // add endpoints on all IP addresses
             server.addEndpoints();
             server.start();
-
         } catch (SocketException e) {
             System.err.println("Failed to initialize server: " + e.getMessage());
         }
@@ -99,14 +96,17 @@ public class HelloWorldServer extends CoapServer {
 
         }
 
+
         @Override
         public void handlePUT(CoapExchange exchange) {
             int format = exchange.getRequestOptions().getContentFormat();
-            if(format == LocData.format){
+            if(format == MsgType.SEND_LOCATION){
                 byte[] payload = exchange.getRequestPayload();
                 LocData data = new LocData(payload);
                 str = data.getLat()+" "+data.getLng()+" "+format;
+                System.out.println( " data : " + str);
                 exchange.respond(CHANGED,str);
+
             }
 
         }
