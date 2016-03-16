@@ -1,9 +1,7 @@
 import org.eclipse.californium.core.CoapResource;
-import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
-import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
@@ -11,11 +9,9 @@ import java.util.List;
  */
 public class RoomManagerResource extends CoapResource {
     private RoomManager roomManager;
-    private UserManager userManager;
-    public RoomManagerResource(String name,UserManager userManager){
+    public RoomManagerResource(String name,RoomManager roomManager){
         super(name);
-        this.userManager = userManager;
-        roomManager = new RoomManager();
+        this.roomManager = roomManager;
     }
 
     @Override
@@ -28,7 +24,7 @@ public class RoomManagerResource extends CoapResource {
         }else if(format == MsgType.ENTER_ROOM){
             String payload = exchange.getRequestText();
             String[] ids = payload.split("/");
-            roomManager.enterRoom(Integer.parseInt(ids[0]),Integer.parseInt(ids[1]));
+            roomManager.enterRoom(Integer.parseInt(ids[0]),Integer.parseInt(ids[1]),Integer.parseInt(ids[2]));
             exchange.respond(ResponseCode.VALID);
         }
     }
@@ -37,10 +33,10 @@ public class RoomManagerResource extends CoapResource {
     public void handleGET(CoapExchange exchange) {
         List<Room> roomList = roomManager.getRoomList();
 
-        StreamList streamList = new StreamList(roomList.size(),roomList.get(0).getRoomConfig().getByteStream().length);
+        StreamListConverter streamListConverter = new StreamListConverter(roomList.size(),roomList.get(0).getRoomConfig().getByteStream().length);
         for (Room room : roomList) {
-            streamList.addStream(room.getRoomConfig().getByteStream());
+            streamListConverter.addStream(room.getRoomConfig().getByteStream());
         }
-        exchange.respond(ResponseCode.VALID,streamList.getStream());
+        exchange.respond(ResponseCode.VALID, streamListConverter.getStream());
     }
 }

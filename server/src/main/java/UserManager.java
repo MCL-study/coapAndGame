@@ -6,21 +6,21 @@ import java.util.List;
  */
 public class UserManager {
 
-    private List<User> userList;
+    private List<UserData> userList;
     private int id;
     public UserManager(){
-        userList = new ArrayList<User>();
+        userList = new ArrayList<UserData>();
         id=0;
     }
 
-    public User createUser(){
-        User user = new User(id);
+    public UserData createUser(){
+        UserData user = new UserData(id,-1);
         id++;
         addUser(user);
         return user;
     }
 
-    private void addUser(User user){
+    private void addUser(UserData user){
         userList.add(user);
     }
 }

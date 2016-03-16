@@ -5,7 +5,8 @@ public class MsgType {
     public static final int MAKE_ROOM = 100;
     public static final int REQUEST_ID = 103;
     public static final int SEND_LOCATION = 104;
-    public static final int SEND_LOCATIONS = 105;
+    public static final int USER_DATA = 105;
+//    public static final int SEND_LOCATIONS = 105;
     public static final int REQUEST_ROOM_LIST = 106;
     public static final int ENTER_ROOM = 108;
     //--delete

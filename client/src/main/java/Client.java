@@ -1,8 +1,3 @@
-import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapObserveRelation;
-import org.eclipse.californium.core.CoapResponse;
-
 import java.net.URI;
 import java.util.List;
 import java.util.Scanner;
@@ -12,14 +7,17 @@ import java.util.Scanner;
  */
 public class Client {
     private boolean aliveFlag;
-    private final Login login;
+    private final UserState userState;
     private final RoomConnector roomConnector;
     private GpsInfo gpsInfo;
+    private final GameClient gameClient;
+    private Scanner scanner;
 
     public Client(URI uri){
         aliveFlag=true;
-        login = new Login(uri);
-        roomConnector = new RoomConnector(uri,login);
+        userState = new UserState(uri);
+        roomConnector = new RoomConnector(uri, userState);
+        gameClient = new GameClient(uri,userState);
         gpsInfo = new GpsInfo();
     }
 
@@ -31,23 +29,17 @@ public class Client {
         return aliveFlag;
     }
 
-    private void login(){
-        login.requestID();
-    }
-
-
     public void process(){
-        login();
+        userState.login();
         while (true){
             System.out.println("1: 방만들기 2: 방 찾기 3: 방들어가기");
-            Scanner scanner = new Scanner(System.in);
+            scanner = new Scanner(System.in);
             int index = scanner.nextInt();
             switch (index){
                 case 1:
                     Integer roomId = roomConnector.makeRoom(gpsInfo.getLocation(),12,13);
                     if(roomId != null){
-                        System.out.print("방 접속 시도");
-                        roomConnector.enterRoom(roomId);
+                        startGame(roomId);
                     }
                     break;
                 case 2:
@@ -60,7 +52,7 @@ public class Client {
                 case 3:
                     System.out.println("들어갈 방 번호 :");
                     int i = scanner.nextInt();
-                    roomConnector.enterRoom(i);
+                    startGame(i);
                     break;
                 default:
                     System.out.print("switch error");
@@ -68,6 +60,20 @@ public class Client {
         }
     }
 
+    public void startGame(int roomId){
+        boolean flag = enterRoom(roomId);
+        int id = userState.getId();
+        if(flag)
+            gameClient.start(roomId,id);
+        while (gameClient.isAlive()){
+            try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
+        }
+    }
 
-
+    private boolean enterRoom(int roomId) {
+        System.out.println("1:추격자 2: 도망자");
+        int i = scanner.nextInt();
+        userState.setUserProperties(i);
+        return roomConnector.enterRoom(roomId,i);
+    }
 }

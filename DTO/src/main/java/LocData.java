@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
  * Created by myks7 on 2016-03-13.
  */
 public class LocData {
-    private Double lat, lng;
+    private final Double lat, lng;
 
     public LocData(double lat, double lng){
         this.lat = lat;

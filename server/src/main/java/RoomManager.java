@@ -17,7 +17,7 @@ public class RoomManager {
         return room;
     }
 
-    private Room searchRoom(int roomId){
+    public Room searchRoom(int roomId){
         for (Room room : roomList) {
             if (room.getRoomId() == roomId)
                 return room;
@@ -25,14 +25,21 @@ public class RoomManager {
         return null;
     }
 
-    public void enterRoom(int roomId, int userId){
+    public void enterRoom(int roomId, int userId,int userProperties){
         Room room = searchRoom(roomId);
         if (room != null) {
-            room.addUser(new User(userId));
+            room.addUser(new UserData(userId,userProperties));
         }
     }
 
     public List<Room> getRoomList(){
         return roomList;
+    }
+
+    public void updateUserData(int roomId, UserData userData) {
+        Room room = searchRoom(roomId);
+        if (room != null) {
+            room.searchUserAndUpdate(userData);
+        }
     }
 }

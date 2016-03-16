@@ -16,7 +16,7 @@ public class LoginManagerResource extends CoapResource {
 
     @Override
     public void handleGET(CoapExchange exchange) {
-        User user =  userManager.createUser();
+        UserData user =  userManager.createUser();
         Integer integer = user.getId();
         exchange.respond(integer.toString());
 

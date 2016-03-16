@@ -6,17 +6,17 @@ import java.util.List;
 /**
  * Created by myks7 on 2016-03-16.
  */
-public class StreamList {
+public class StreamListConverter {
     private int cnt=0;
     private final int maxCnt;
     private final int objectSize;
     private byte[] stream;
-    public StreamList(int maxCnt, int objectSize){
+    public StreamListConverter(int maxCnt, int objectSize){
         this.maxCnt=maxCnt;
         this.objectSize = objectSize;
         stream = new byte[maxCnt* this.objectSize];
     }
-    public StreamList(byte[] stream){
+    public StreamListConverter(byte[] stream){
         maxCnt = ByteBuffer.wrap(stream,0,4).order(ByteOrder.LITTLE_ENDIAN).getInt();
         objectSize = ByteBuffer.wrap(stream,4,4).order(ByteOrder.LITTLE_ENDIAN).getInt();
         this.stream = new byte[objectSize*maxCnt];
@@ -46,5 +46,12 @@ public class StreamList {
         ToByteUtil.intToBytes_LE(objectSize,result,4);
         System.arraycopy(stream,0,result,8,stream.length);
         return result;
+    }
+    public int getMaxCnt(){
+        return maxCnt;
+    }
+
+    public int getObjectSize() {
+        return objectSize;
     }
 }

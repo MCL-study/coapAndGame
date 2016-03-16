@@ -6,15 +6,17 @@ import java.net.URI;
 /**
  * Created by myks7 on 2016-03-15.
  */
-public class Login {
+public class UserState {
     private int id;
     private final CoapClient client;
+    private int connectedRoomId;
+    private int userProperties;
 
-    public Login(URI uri){
+    public UserState(URI uri){
         client = new CoapClient(uri+"/LoginManager");
     }
 
-    public void requestID(){
+    public void login(){
      //   client.put("",MsgType.REQUEST_ID);
         CoapResponse response = client.get();
         if (response!=null) {
@@ -24,5 +26,21 @@ public class Login {
 
     public int getId(){
         return id;
+    }
+
+    public int getConnectedRoomId() {
+        return connectedRoomId;
+    }
+
+    public void setConnectedRoomId(int connectedRoomId) {
+        this.connectedRoomId = connectedRoomId;
+    }
+
+    public int getUserProperties() {
+        return userProperties;
+    }
+
+    public void setUserProperties(int userProperties) {
+        this.userProperties = userProperties;
     }
 }

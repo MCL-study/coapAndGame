@@ -50,7 +50,7 @@ public class GETClient {
 
 		//	client.put("127.001,36.001", 1234);
 			LocData data = new LocData(1299.001,36.001);
-			client.put(data.getByteStream(),MsgType.SEND_LOCATION);
+		//	client.put(data.getByteStream(),MsgType.SEND_LOCATION);
 
 
 			CoapResponse response = client.get();

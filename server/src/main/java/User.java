@@ -3,9 +3,11 @@
  */
 public class User {
     private int id;
+    private int userProperties;
 
-    public User(int id){
+    public User(int id,int userProperties){
         this.id=id;
+        this.userProperties = userProperties;
     }
 
     public int getId() {

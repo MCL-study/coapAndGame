@@ -30,14 +30,14 @@ public class HelloWorldResource extends CoapResource {
     @Override
     public void handlePUT(CoapExchange exchange) {
         int format = exchange.getRequestOptions().getContentFormat();
-        if(format == MsgType.SEND_LOCATION){
+     /*   if(format == MsgType.SEND_LOCATION){
             byte[] payload = exchange.getRequestPayload();
             LocData data = new LocData(payload);
             str = data.getLat()+" "+data.getLng()+" "+format;
             System.out.println( " data : " + str);
             exchange.respond(CHANGED,str);
 
-        }
+        }*/
 
     }
 }

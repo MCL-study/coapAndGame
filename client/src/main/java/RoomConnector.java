@@ -1,10 +1,6 @@
 import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
-import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
-import org.eclipse.californium.core.coap.Response;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -16,12 +12,12 @@ import java.util.List;
 public class RoomConnector {
     private final CoapClient client;
     private RoomConfig roomConfig;
-    private Login login;
+    private UserState userState;
     private List<RoomConfig> configs;
 
-    public RoomConnector(URI uri,Login login){
+    public RoomConnector(URI uri, UserState userState){
         client = new CoapClient(uri+"/RoomManager");
-        this.login=login;
+        this.userState = userState;
     }
 
     public Integer makeRoom(LocData centerLoc,int maxGameMember,int scale){
@@ -29,31 +25,33 @@ public class RoomConnector {
         CoapResponse response = client.put(config.getByteStream(),MsgType.MAKE_ROOM);
         if(response!=null){
             if(response.getCode() == ResponseCode.VALID){
-                System.out.print("방 만들기 성공");
+                System.out.println("방 만들기 성공");
                 roomConfig = new RoomConfig(response.getPayload());
                 return roomConfig.getRoomID();
             }
         }else{
-            System.out.print("error");
+            System.out.println("error");
         }
         return null;
     }
 
-    public void enterRoom(int roomId){
-        CoapResponse response = client.put(roomId+"/"+login.getId(),MsgType.ENTER_ROOM);
+    public boolean enterRoom(int roomId,int userProperties){
+        CoapResponse response = client.put(roomId+"/"+ userState.getId()+"/"+userProperties,MsgType.ENTER_ROOM);
         if(response!=null) {
             if (response.getCode() == ResponseCode.VALID) {
                 System.out.println("접속 요청 완료");
+                return true;
             }
         }
+        return false;
     }
 
     public void requestRoomList(){
         configs = new ArrayList<RoomConfig>();
         CoapResponse response = client.get();
         if(response!=null){
-            StreamList streamList = new StreamList(response.getPayload());
-            List<byte[]> byteStreamList = streamList.getStreamList();
+            StreamListConverter streamListConverter = new StreamListConverter(response.getPayload());
+            List<byte[]> byteStreamList = streamListConverter.getStreamList();
             for(byte[] stream : byteStreamList){
                 configs.add(new RoomConfig(stream));
             }

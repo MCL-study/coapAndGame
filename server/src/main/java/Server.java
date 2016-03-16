@@ -19,26 +19,26 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapServer;
 import org.eclipse.californium.core.network.CoapEndpoint;
 import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.network.config.NetworkConfig;
-import org.eclipse.californium.core.server.resources.CoapExchange;
-
-import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
 
 
 public class Server extends CoapServer {
     private UserManager userManager;
+    private RoomManager roomManager;
 	private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
 
     public Server() throws SocketException {
         userManager = new UserManager();
-        add(new CoapObserveRoom("obsRoom"));
+        roomManager = new RoomManager();
         add(new LoginManagerResource("LoginManager",userManager));
-        add(new RoomManagerResource("RoomManager",userManager));
+        add(new RoomManagerResource("RoomManager",roomManager));
+        add(new GameObserveResource("gameObserve",roomManager));
     }
 
     /**

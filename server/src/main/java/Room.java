@@ -7,12 +7,13 @@ import java.util.List;
 public class Room {
     private int roomId;
     private int maxGameMember;
+//    private int currentChaserNum, currentFugitiveNum;
     private LocData centerLoc;
     private int scale;
-    private List<User> Users;
+    private List<UserData> userList;
 
     public Room(int roomId ,RoomConfig config){
-        Users = new ArrayList<User>();
+        userList = new ArrayList<UserData>();
         this.roomId = roomId;
         maxGameMember = config.getMaxGameMember();
         scale = config.getScale();
@@ -27,7 +28,26 @@ public class Room {
         return new RoomConfig(roomId,centerLoc,maxGameMember,scale);
     }
 
-    public void addUser(User user){
-        Users.add(user);
+    public void addUser(UserData user){
+        userList.add(user);
+    }
+    private UserData searchUser(int userId){
+        for(UserData userData : userList){
+            if(userData.getId() == userId){
+                return userData;
+            }
+        }
+        return null;
+    }
+
+    public void searchUserAndUpdate(UserData userData) {
+        UserData user = searchUser(userData.getId());
+        if (user != null) {
+            user.setLocData(userData.getLocData());
+        }
+    }
+
+    public List<UserData> getUserList() {
+        return userList;
     }
 }
