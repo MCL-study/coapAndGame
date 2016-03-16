@@ -38,6 +38,7 @@ public class Server extends CoapServer {
         userManager = new UserManager();
         add(new CoapObserveRoom("obsRoom"));
         add(new LoginManagerResource("LoginManager",userManager));
+        add(new RoomManagerResource("RoomManager",userManager));
     }
 
     /**
