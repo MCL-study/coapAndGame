@@ -24,7 +24,7 @@ public class RoomConnector {
         this.login=login;
     }
 
-    public int makeRoom(LocData centerLoc,int maxGameMember,int scale){
+    public Integer makeRoom(LocData centerLoc,int maxGameMember,int scale){
         RoomConfig config = new RoomConfig(centerLoc,maxGameMember,scale);
         CoapResponse response = client.put(config.getByteStream(),MsgType.MAKE_ROOM);
         if(response!=null){
@@ -36,7 +36,7 @@ public class RoomConnector {
         }else{
             System.out.print("error");
         }
-        return -1;
+        return null;
     }
 
     public void enterRoom(int roomId){
