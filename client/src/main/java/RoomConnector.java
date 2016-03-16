@@ -24,18 +24,19 @@ public class RoomConnector {
         this.login=login;
     }
 
-    public void makeRoom(LocData centerLoc,int maxGameMember,int scale){
+    public int makeRoom(LocData centerLoc,int maxGameMember,int scale){
         RoomConfig config = new RoomConfig(centerLoc,maxGameMember,scale);
         CoapResponse response = client.put(config.getByteStream(),MsgType.MAKE_ROOM);
         if(response!=null){
             if(response.getCode() == ResponseCode.VALID){
-                System.out.print("방 만들기 성공, 접속 시도");
+                System.out.print("방 만들기 성공");
                 roomConfig = new RoomConfig(response.getPayload());
-                enterRoom(roomConfig.getRoomID());
+                return roomConfig.getRoomID();
             }
         }else{
             System.out.print("error");
         }
+        return -1;
     }
 
     public void enterRoom(int roomId){

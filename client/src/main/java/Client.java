@@ -44,7 +44,9 @@ public class Client {
             int index = scanner.nextInt();
             switch (index){
                 case 1:
-                    roomConnector.makeRoom(gpsInfo.getLocation(),12,13);
+                    int roomId = roomConnector.makeRoom(gpsInfo.getLocation(),12,13);
+                    System.out.print("방 접속 시도");
+                    roomConnector.enterRoom(roomId);
                     break;
                 case 2:
                     roomConnector.requestRoomList();
