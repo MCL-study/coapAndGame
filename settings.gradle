@@ -1,4 +1,5 @@
 rootProject.name = 'coap'
-include 'server'
-include 'client'
-include 'DTO'
+include ':server'
+include ':client'
+include ':DTO'
+include ':app'
