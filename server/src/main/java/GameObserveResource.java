@@ -2,6 +2,7 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -15,16 +16,18 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
  */
 public class GameObserveResource extends CoapResource {
     private RoomManager roomManager;
+    private List<Integer> deleteUserList;
     public GameObserveResource(String name,RoomManager roomManager) {
         super(name);
         this.roomManager = roomManager;
+        deleteUserList = new ArrayList<Integer>();
         setObservable(true); // enable observing
         setObserveType(CoAP.Type.CON); // configure the notification type to CONs
         getAttributes().setObservable(); // mark observable in the Link-Format
 
         // schedule a periodic update task, otherwise let events call changed()
         Timer timer = new Timer();
-        timer.schedule(new UpdateTask(), 0, 2000);
+        timer.schedule(new UpdateTask(), 0, 1000);
     }
 
     private class UpdateTask extends TimerTask {
@@ -67,7 +70,20 @@ public class GameObserveResource extends CoapResource {
             int roomId = locationMessage.getRoomId();
             List<UserData> userDataList = locationMessage.getUserDataList();
             UserData userData = userDataList.get(0);
-            roomManager.updateUserData(roomId,userData);
+            if(deleteUserList.contains(userData.getId())){
+                exchange.respond(DELETED);
+                deleteUserList.remove(userData.getId());
+            }else{
+                roomManager.updateUserData(roomId, userData);
+                exchange.respond(VALID);
+            }
+        }else if(contentFormat == MsgType.CATCH_FUGITIVE){
+            String requestText = exchange.getRequestText();
+            String[] split = requestText.split("/");
+            int roomId = Integer.parseInt(split[0]);
+            int fugitiveId = Integer.parseInt(split[1]);
+            roomManager.deleteUser(roomId,fugitiveId);
+            deleteUserList.add(fugitiveId);
         }
         //exchange.respond(CHANGED);
 //        changed(); // notify all observers

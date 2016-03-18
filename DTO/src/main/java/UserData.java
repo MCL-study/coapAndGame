@@ -52,4 +52,8 @@ public class UserData {
     public LocData getLocData() {
         return locData;
     }
+
+    public int getUserProperties() {
+        return userProperties;
+    }
 }

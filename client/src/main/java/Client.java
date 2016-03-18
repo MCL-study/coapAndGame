@@ -71,7 +71,7 @@ public class Client {
     }
 
     private boolean enterRoom(int roomId) {
-        System.out.println("1:추격자 2: 도망자");
+        System.out.println("0: 도망자 1:추격자");
         int i = scanner.nextInt();
         userState.setUserProperties(i);
         return roomConnector.enterRoom(roomId,i);

@@ -42,4 +42,9 @@ public class RoomManager {
             room.searchUserAndUpdate(userData);
         }
     }
+
+    public void deleteUser(int roomId, int userId){
+        Room room = searchRoom(roomId);
+        room.deleteUser(userId);
+    }
 }

@@ -9,6 +9,7 @@ public class MsgType {
 //    public static final int SEND_LOCATIONS = 105;
     public static final int REQUEST_ROOM_LIST = 106;
     public static final int ENTER_ROOM = 108;
+    public static final int CATCH_FUGITIVE = 109;
     //--delete
    // public static final int RESPOND_ID = 102;
    // public static final int MAKE_ROOM_OK= 101;

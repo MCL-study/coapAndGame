@@ -50,4 +50,9 @@ public class Room {
     public List<UserData> getUserList() {
         return userList;
     }
+
+    public void deleteUser(int userId){
+        UserData userData = searchUser(userId);
+        userList.remove(userData);
+    }
 }

@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static org.eclipse.californium.core.coap.CoAP.ResponseCode.DELETED;
+import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
+
 /**
  * Created by myks7 on 2016-03-15.
  */
@@ -21,6 +24,7 @@ public class GameClient {
     private final UserState userState;
     private Timer timer;
     private List<UserData> userList;
+    private UserData player;
 
     public GameClient(URI uri, UserState userState){
         aliveFlag = false;
@@ -32,7 +36,7 @@ public class GameClient {
         aliveFlag = true;
         relation = client.observe(new handler(),roomId);
         timer = new Timer();
-        timer.schedule(new NotifyLocationTask(), 0, 5000);
+        timer.schedule(new NotifyLocationTask(), 0, 1000);
     }
 
     public void close(){
@@ -72,8 +76,26 @@ public class GameClient {
             UserData userData = new UserData(userState.getId(),userState.getUserProperties(),location);
             LocationMessage locationMessage = new LocationMessage(userState.getConnectedRoomId(),1, UserData.getSize());
             locationMessage.addUserDataStream(userData.getStream());
-            client.put(locationMessage.getStream(),MsgType.USER_DATA);
+            CoapResponse response = client.put(locationMessage.getStream(), MsgType.USER_DATA);
+            if(response!=null){
+                if(response.getCode() == DELETED){
+                    endGame();
+                }else if(response.getCode() == VALID){
+                    for (UserData userData1 : userList) {
+                        if (userData1.getId() == userState.getId()) {
+                            userData1.setLocData(userData.getLocData());
+                            player = userData1;
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private void endGame() {
+        timer.cancel();
+        relation.reactiveCancel();
+        aliveFlag =false;
     }
 
     private void updateCurrentLoc(LocData location) {
@@ -81,16 +103,34 @@ public class GameClient {
     }
 
     private void updateAllLocation(List<UserData> userDataList){
-        for(UserData data : userDataList){
+        for (UserData data : userDataList) {
+            boolean exist=false;
             int id = data.getId();
-            for(UserData userData : userList){
-                if(userState.getId() == id){
-                    if(userData.getId() == id) {
+            for (UserData userData : userList) {
+                if (userState.getId() != id) {
+                    if (userData.getId() == id) {
                         userData.setLocData(data.getLocData());
+                        exist=true;
+                    }
+                }
+            }
+            if(!exist){
+                userList.add(data);
+            }
+            if(player!=null){
+                if(player.getUserProperties() == UserProperties.CHASER){
+                    if(data.getUserProperties() == UserProperties.FUGITIVI){
+                        LocData locData = data.getLocData();
+                        LocData playerLocData = player.getLocData();
+                        double diffLat= locData.getLat() - playerLocData.getLat();
+                        double diffLng= locData.getLng() - playerLocData.getLng();
+                        double distance = Math.sqrt(diffLat*diffLat + diffLng*diffLng);
+                        if(distance < 0.1){
+                            client.put(userState.getConnectedRoomId()+"/"+data.getId(),MsgType.CATCH_FUGITIVE);
+                        }
                     }
                 }
             }
         }
-
     }
 }
