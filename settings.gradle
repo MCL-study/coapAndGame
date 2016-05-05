@@ -2,8 +2,13 @@ rootProject.name = 'coap'
 include ':server'
 include ':client'
 include ':DTO'
+include ':androidRoot'
+project(':androidRoot').projectDir = new File(settingsDir, 'androidRoot')
 include ':app'
+project(':app').projectDir = new File(settingsDir, 'androidRoot/app')
 include ':libcocos2dx'
 project(':libcocos2dx').projectDir = new File(settingsDir, 'cocosApp/cocos2d/cocos/platform/android/libcocos2dx')
 include ':cocosApp'
 project(':cocosApp').projectDir = new File(settingsDir, 'cocosApp/proj.android-studio/app')
+include ':cocosAppRoot'
+project(':cocosApp').projectDir = new File(settingsDir, 'cocosApp/proj.android-studio/')
