@@ -1,6 +1,7 @@
 package com.sylphe.app.client;
 
 import com.sylphe.app.dto.RoomConfig;
+import com.sylphe.app.dto.UserProperties;
 
 import java.net.URI;
 import java.util.List;
@@ -77,7 +78,7 @@ public class Client {
     private boolean enterRoom(int roomId) {
         System.out.println("0: 도망자 1:추격자");
         int i = scanner.nextInt();
-        userState.setUserProperties(i);
+        userState.setUserProperties(UserProperties.valueOf(i));
         return roomConnector.enterRoom(roomId,i);
     }
 }
