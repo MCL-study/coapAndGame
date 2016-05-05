@@ -5,10 +5,16 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.2"
-
+    packagingOptions {
+        exclude 'notice.html'
+        exclude 'META-INF/ECLIPSE_.RSA'
+        exclude 'META-INF/ECLIPSE_.SF'
+        exclude 'edl-v10.html'
+        exclude 'epl-v10.html'
+    }
     defaultConfig {
-        applicationId "com.sylphe.app.coapgameapp"
-        minSdkVersion 22
+        applicationId "com.sylphe.app.android"
+        minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -20,23 +26,16 @@ android {
         }
     }
 }
-
-buildscript {
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.5.0'
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+repositories {
+    maven{
+        url "https://repo.eclipse.org/content/repositories/californium"
     }
 }
 
-repositories {
-    jcenter()
-}
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'org.eclipse.californium:californium-core:1.1.0-SNAPSHOT'
+    compile project(':DTO')
 }
