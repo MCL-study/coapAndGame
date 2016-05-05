@@ -2,5 +2,12 @@ group 'sylphe'
 version '1.0-SNAPSHOT'
 apply plugin: 'java'
 
+repositories {
+    maven{
+        url "https://repo.eclipse.org/content/repositories/californium"
+    }
+}
 dependencies {
+    compile 'org.eclipse.californium:californium-core:1.1.0-SNAPSHOT'
+    compile project(':DTO')
 }

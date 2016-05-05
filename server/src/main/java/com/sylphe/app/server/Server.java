@@ -27,16 +27,14 @@ import org.eclipse.californium.core.network.config.NetworkConfig;
 
 
 public class Server extends CoapServer {
-    private UserManager userManager;
-    private RoomManager roomManager;
-	private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
+    private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
 
     public Server() throws SocketException {
-        userManager = new UserManager();
-        roomManager = new RoomManager();
-        add(new LoginManagerResource("LoginManager",userManager));
-        add(new RoomManagerResource("com.sylphe.app.server.RoomManager",roomManager));
-        add(new GameObserveResource("gameObserve",roomManager));
+        UserManager userManager = new UserManager();
+        RoomManager roomManager = new RoomManager();
+        add(new LoginManagerResource("LoginManager", userManager));
+        add(new RoomManagerResource("com.sylphe.app.server.RoomManager", roomManager));
+        add(new GameObserveResource("gameObserve", roomManager));
     }
 
     /**
