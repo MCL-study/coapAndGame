@@ -11,4 +11,4 @@ project(':libcocos2dx').projectDir = new File(settingsDir, 'cocosApp/cocos2d/coc
 include ':cocosApp'
 project(':cocosApp').projectDir = new File(settingsDir, 'cocosApp/proj.android-studio/app')
 include ':cocosAppRoot'
-project(':cocosApp').projectDir = new File(settingsDir, 'cocosApp/proj.android-studio/')
+project(':cocosAppRoot').projectDir = new File(settingsDir, 'cocosApp/proj.android-studio/')

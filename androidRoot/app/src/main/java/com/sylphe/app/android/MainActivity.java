@@ -12,6 +12,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.sylphe.app.android.RoomConnector;
+import com.sylphe.app.android.UserState;
 import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserProperties;
 

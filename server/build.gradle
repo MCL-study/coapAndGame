@@ -1,21 +1,6 @@
 group 'sylphe'
 version '1.0-SNAPSHOT'
-
 apply plugin: 'java'
 
-sourceCompatibility = 1.5
-
-repositories {
-    mavenCentral()
-    maven{
-        url "https://repo.eclipse.org/content/repositories/californium"
-    }
-}
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    compile 'org.eclipse.californium:californium-core:1.1.0-SNAPSHOT'
-    compile project(':DTO')
- //   compile files("$rootDir\\DTO\\build\\libs\\DTO.jar")
 }
