@@ -11,8 +11,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
-
-import org.cocos2dx.cpp.dto.LocData;
+import com.sylphe.app.dto.LocData;
 
 public class GpsInfo extends Service implements LocationListener {
 

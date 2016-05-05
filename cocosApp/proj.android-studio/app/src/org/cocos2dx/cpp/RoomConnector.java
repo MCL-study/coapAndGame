@@ -1,10 +1,7 @@
 package org.cocos2dx.cpp;
 
 
-import org.cocos2dx.cpp.dto.LocData;
-import org.cocos2dx.cpp.dto.MsgType;
-import org.cocos2dx.cpp.dto.RoomConfig;
-import org.cocos2dx.cpp.dto.StreamListConverter;
+import com.sylphe.app.dto.*;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
@@ -23,7 +20,7 @@ public class RoomConnector {
         client = new CoapClient(uri+"/RoomManager");
     }
 
-    public int makeRoom(LocData centerLoc,int maxGameMember,int scale, int timeLimit){
+    public int makeRoom(LocData centerLoc, int maxGameMember, int scale, int timeLimit){
         RoomConfig config = new RoomConfig(centerLoc,maxGameMember,scale,timeLimit);
         CoapResponse response = client.put(config.getByteStream(), MsgType.MAKE_ROOM);
         if(response!=null){
@@ -38,8 +35,8 @@ public class RoomConnector {
         return -1;
     }
 
-    public boolean enterRoom(int roomId,int id,int userProperties){
-        CoapResponse response = client.put(roomId + "/" + id + "/" + userProperties, MsgType.ENTER_ROOM);
+    public boolean enterRoom(int roomId,int id,UserProperties userProperties){
+        CoapResponse response = client.put(roomId + "/" + id + "/" + userProperties.value, MsgType.ENTER_ROOM);
         if(response!=null) {
             if (response.getCode() == ResponseCode.VALID) {
                 System.out.println("접속 요청 완료");

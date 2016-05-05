@@ -2,22 +2,17 @@ package org.cocos2dx.cpp;
 
 import android.util.Log;
 
-import org.cocos2dx.cpp.dto.LocData;
-import org.cocos2dx.cpp.dto.LocationMessage;
-import org.cocos2dx.cpp.dto.MsgType;
-import org.cocos2dx.cpp.dto.UserData;
-import org.cocos2dx.cpp.dto.UserProperties;
+import com.sylphe.app.dto.*;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
-import org.eclipse.californium.core.coap.Response;
+
 
 import java.net.URI;
 import java.util.List;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.DELETED;
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
@@ -41,7 +36,7 @@ public class GameClient{
         this.gpsInfo = gpsInfo;
     }
 
-    public void start(int roomId, int id,int userProperties) {
+    public void start(int roomId, int id,UserProperties userProperties) {
         this.roomId = roomId;
         player = new UserData(id,userProperties);
         aliveFlag = true;

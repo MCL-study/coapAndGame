@@ -27,12 +27,14 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.cocos2dx.cpp.dto.RoomConfig;
+import com.sylphe.app.dto.RoomConfig;
+import com.sylphe.app.dto.UserProperties;
 import org.cocos2dx.lib.Cocos2dxActivity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+
 
 public class AppActivity extends Cocos2dxActivity {
 
@@ -67,7 +69,7 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static int enterRoom(int roomId,int id,int userProperties){
-        if(roomConnector.enterRoom(roomId, id, userProperties))
+        if(roomConnector.enterRoom(roomId, id, UserProperties.valueOf(userProperties)))
             return 1;
         return -1;
     }
@@ -91,7 +93,7 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static void startGame(int roomId, int id,int properties){
-        gameClient.start(roomId,id,properties);
+        gameClient.start(roomId,id,UserProperties.valueOf(properties));
     }
 
     public static void catchFugitive(int fugitiveId){

@@ -1,5 +1,6 @@
 package org.cocos2dx.cpp;
 
+import com.sylphe.app.dto.UserProperties;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 
@@ -12,7 +13,7 @@ public class Login {
     private int id=-1;
     private final CoapClient client;
     private int connectedRoomId;
-    private int userProperties;
+    private UserProperties userProperties;
 
     public Login(URI uri){
         client = new CoapClient(uri+"/LoginManager");
@@ -38,11 +39,11 @@ public class Login {
         this.connectedRoomId = connectedRoomId;
     }
 
-    public int getUserProperties() {
+    public UserProperties getUserProperties() {
         return userProperties;
     }
 
-    public void setUserProperties(int userProperties) {
+    public void setUserProperties(UserProperties userProperties) {
         this.userProperties = userProperties;
     }
 }

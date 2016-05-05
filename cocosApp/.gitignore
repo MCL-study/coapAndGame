@@ -10,7 +10,7 @@
 /proj.android-studio/app/build.xml
 /proj.android-studio/app/local.properties
 /proj.android-studio/app/proguard-project.txt
-
+/cocos2d/cocos/platform/android/libcocos2dx/build
 *Debug*/
 
 /proj.win32/cocosApp.VC.db
