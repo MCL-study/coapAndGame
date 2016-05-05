@@ -32,11 +32,13 @@ public class RoomManagerResource extends CoapResource {
     @Override
     public void handleGET(CoapExchange exchange) {
         List<Room> roomList = roomManager.getRoomList();
-
-        StreamListConverter streamListConverter = new StreamListConverter(roomList.size(),roomList.get(0).getRoomConfig().getByteStream().length);
-        for (Room room : roomList) {
-            streamListConverter.addStream(room.getRoomConfig().getByteStream());
+        if(roomList.size() != 0){
+            StreamListConverter streamListConverter = new StreamListConverter(roomList.size(),roomList.get(0).getRoomConfig().getByteStream().length);
+            for (Room room : roomList) {
+                streamListConverter.addStream(room.getRoomConfig().getByteStream());
+            }
+            exchange.respond(ResponseCode.VALID, streamListConverter.getStream());
         }
-        exchange.respond(ResponseCode.VALID, streamListConverter.getStream());
+        exchange.respond(ResponseCode.NOT_FOUND);
     }
 }

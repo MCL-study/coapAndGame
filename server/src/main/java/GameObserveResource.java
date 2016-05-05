@@ -16,11 +16,10 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
  */
 public class GameObserveResource extends CoapResource {
     private RoomManager roomManager;
-    private List<Integer> deleteUserList;
+
     public GameObserveResource(String name,RoomManager roomManager) {
         super(name);
         this.roomManager = roomManager;
-        deleteUserList = new ArrayList<Integer>();
         setObservable(true); // enable observing
         setObserveType(CoAP.Type.CON); // configure the notification type to CONs
         getAttributes().setObservable(); // mark observable in the Link-Format
@@ -33,7 +32,7 @@ public class GameObserveResource extends CoapResource {
     private class UpdateTask extends TimerTask {
         @Override
         public void run() {
-            System.out.println("update obs..."+getName());
+            //System.out.println("update obs..."+getName());
             // .. periodic update of the resource
             changed(); // notify all observers
         }
@@ -41,39 +40,44 @@ public class GameObserveResource extends CoapResource {
 
     @Override
     public void handleGET(CoapExchange exchange) {
-        exchange.setMaxAge(1); // the Max-Age value should match the update interval
-//        exchange.respond("update "+getName() +"  "+exchange.getRequestOptions().getAccept());
-        int roomid =exchange.getRequestOptions().getAccept();
-        Room room = roomManager.searchRoom(roomid);
+
+      //    exchange.setMaxAge(1); // the Max-Age value should match the update interval
+      //  exchange.respond("update "+getName() +"  "+exchange.getRequestOptions().getAccept());
+        int roomId =exchange.getRequestOptions().getAccept();
+        Room room = roomManager.searchRoom(roomId);
         if(room!=null){
             List<UserData> userList = room.getUserList();
-            LocationMessage locationMessage = new LocationMessage(roomid,userList.size(),UserData.getSize());
+            LocationMessage locationMessage = new LocationMessage(roomId,userList.size(),UserData.getSize());
             for(UserData data : userList){
                 locationMessage.addUserDataStream(data.getStream());
+            //    System.out.println(data.getId()+" "+data.getLocData().getLng()+" "+data.getLocData().getLat());
             }
-            exchange.respond(VALID,locationMessage.getStream());
+                    exchange.respond(VALID,locationMessage.getStream());
         }
+        System.out.println("handleGET");
     }
 
     @Override
     public void handleDELETE(CoapExchange exchange) {
         delete(); // will also call clearAndNotifyObserveRelations(ResponseCode.NOT_FOUND)
         exchange.respond(DELETED);
+        System.out.println("handleDELETE");
     }
 
     @Override
     public void handlePUT(CoapExchange exchange) {
+
         int contentFormat = exchange.getRequestOptions().getContentFormat();
         if(contentFormat == MsgType.USER_DATA){
             byte[] requestPayload = exchange.getRequestPayload();
             LocationMessage locationMessage = new LocationMessage(requestPayload, requestPayload.length);
-            int roomId = locationMessage.getRoomId();
             List<UserData> userDataList = locationMessage.getUserDataList();
             UserData userData = userDataList.get(0);
-            if(deleteUserList.contains(userData.getId())){
+            if(roomManager.existDeleteUser(userData.getId())){
                 exchange.respond(DELETED);
-                deleteUserList.remove(userData.getId());
+                roomManager.removeDeleteUser(userData.getId());
             }else{
+                int roomId = locationMessage.getRoomId();
                 roomManager.updateUserData(roomId, userData);
                 exchange.respond(VALID);
             }
@@ -83,9 +87,18 @@ public class GameObserveResource extends CoapResource {
             int roomId = Integer.parseInt(split[0]);
             int fugitiveId = Integer.parseInt(split[1]);
             roomManager.deleteUser(roomId,fugitiveId);
-            deleteUserList.add(fugitiveId);
+            exchange.respond(VALID);
+        }else if(contentFormat == MsgType.DIE_PLAYER){
+            String requestText = exchange.getRequestText();
+            String[] split = requestText.split("/");
+            int roomId = Integer.parseInt(split[0]);
+            Integer playerId = Integer.parseInt(split[1]);
+            roomManager.deleteUser(roomId,playerId);
+            exchange.respond(DELETED);
         }
         //exchange.respond(CHANGED);
 //        changed(); // notify all observers
+        System.out.println("handlePUT");
+
     }
 }

@@ -9,7 +9,7 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.CHANGED;
  */
 public class LoginManagerResource extends CoapResource {
     private UserManager userManager;
-    public LoginManagerResource(String name,UserManager userManager){
+    public      LoginManagerResource(String name,UserManager userManager){
         super(name);
         this.userManager = userManager;
     }

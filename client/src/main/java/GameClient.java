@@ -119,7 +119,7 @@ public class GameClient {
             }
             if(player!=null){
                 if(player.getUserProperties() == UserProperties.CHASER){
-                    if(data.getUserProperties() == UserProperties.FUGITIVI){
+                    if(data.getUserProperties() == UserProperties.FUGITIVE){
                         LocData locData = data.getLocData();
                         LocData playerLocData = player.getLocData();
                         double diffLat= locData.getLat() - playerLocData.getLat();
