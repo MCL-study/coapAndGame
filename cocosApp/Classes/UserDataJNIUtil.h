@@ -13,17 +13,17 @@ private:
 	cocos2d::JniMethodInfo getLocDataInfo;
 	UserDataJNIUtil() {
 		cocos2d::JniHelper::getMethodInfo(getIDInfo
-			, "org/cocos2dx/cpp/dto/UserData"
+			, "com/sylphe/app/dto/UserData"
 			, "getId"
 			, "()I");
 		cocos2d::JniHelper::getMethodInfo(getUserPropertiesInfo
-			, "org/cocos2dx/cpp/dto/UserData"
+			, "com/sylphe/app/dto/UserData"
 			, "getUserProperties"
 			, "()I");
 		cocos2d::JniHelper::getMethodInfo(getLocDataInfo
-			, "org/cocos2dx/cpp/dto/UserData"
+			, "com/sylphe/app/dto/UserData"
 			, "getLocData"
-			, "()Lorg/cocos2dx/cpp/dto/LocData;");
+			, "()Lcom/sylphe/app/dto/LocData;");
 	}
 
 public:

@@ -135,7 +135,7 @@ std::list<RoomConfig*>* FrontHall::refreshRoom() {
 	if (JniHelper::getStaticMethodInfo(t
 		, "org/cocos2dx/cpp/AppActivity"
 		, "requestRoomList"
-		, "()[Lorg/cocos2dx/cpp/dto/RoomConfig;")) {
+		, "()[Lcom/sylphe/app/dto/RoomConfig;")) {
 		objArr = (jobjectArray)t.env->CallStaticObjectMethod(t.classID, t.methodID);
 		log("refreshRoom Call : CallStaticObjectMethod");
 		if (objArr == NULL)

@@ -9,11 +9,11 @@ private:
 	cocos2d::JniMethodInfo getLngInfo;
 	LocDataJNIUtil() {
 		cocos2d::JniHelper::getMethodInfo(getLatInfo
-			, "org/cocos2dx/cpp/dto/LocData"
+			, "com/sylphe/app/dto/LocData"
 			, "getLat"
 			, "()D");
 		cocos2d::JniHelper::getMethodInfo(getLngInfo
-			, "org/cocos2dx/cpp/dto/LocData"
+			, "com/sylphe/app/dto/LocData"
 			, "getLng"
 			, "()D");
 	}

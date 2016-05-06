@@ -10,15 +10,15 @@ private:
 	cocos2d::JniMethodInfo getScaleInfo;
 	RoomCfgJNIUtil() {
 		cocos2d::JniHelper::getMethodInfo(getRoomIDInfo
-			, "org/cocos2dx/cpp/dto/RoomConfig"
+			, "com/sylphe/app/dto/RoomConfig"
 			, "getRoomID"
 			, "()I");
 		cocos2d::JniHelper::getMethodInfo(getMaxGameMemberInfo
-			, "org/cocos2dx/cpp/dto/RoomConfig"
+			, "com/sylphe/app/dto/RoomConfig"
 			, "getMaxGameMember"
 			, "()I");
 		cocos2d::JniHelper::getMethodInfo(getScaleInfo
-			, "org/cocos2dx/cpp/dto/RoomConfig"
+			, "com/sylphe/app/dto/RoomConfig"
 			, "getScale"
 			, "()I");
 	}
