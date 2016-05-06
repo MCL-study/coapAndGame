@@ -58,4 +58,7 @@ public class UserData {
     public UserProperties getUserProperties() {
         return userProperties;
     }
+    public int getUserPropertiesValue() {
+        return userProperties.value;
+    }
 }

@@ -18,7 +18,7 @@ private:
 			, "()I");
 		cocos2d::JniHelper::getMethodInfo(getUserPropertiesInfo
 			, "com/sylphe/app/dto/UserData"
-			, "getUserProperties"
+			, "getUserPropertiesValue"
 			, "()I");
 		cocos2d::JniHelper::getMethodInfo(getLocDataInfo
 			, "com/sylphe/app/dto/UserData"
