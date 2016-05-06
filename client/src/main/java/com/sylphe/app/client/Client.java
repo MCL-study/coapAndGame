@@ -36,26 +36,26 @@ public class Client {
 
     public void process(){
         userState.login();
-        while (true){
-            System.out.println("1: 방만들기 2: 방 찾기 3: 방들어가기");
+        while (true) {
+            System.out.println("1: 방만들기2:방찾기3: 방들어가기");
             scanner = new Scanner(System.in);
             int index = scanner.nextInt();
-            switch (index){
+            switch (index) {
                 case 1:
-                    Integer roomId = roomConnector.makeRoom(gpsInfo.getLocation(),12,13,999);
-                    if(roomId != null){
+                    Integer roomId = roomConnector.makeRoom(gpsInfo.getLocation(), 12, 13, 999);
+                    if (roomId != null) {
                         startGame(roomId);
                     }
                     break;
                 case 2:
                     roomConnector.requestRoomList();
                     List<RoomConfig> roomConfigList = roomConnector.getRoomCfgList();
-                    for(RoomConfig cfg : roomConfigList){
-                        System.out.println("방번호: "+cfg.getRoomID());
+                    for (RoomConfig cfg : roomConfigList) {
+                        System.out.println("방번호: " + cfg.getRoomID());
                     }
                     break;
                 case 3:
-                    System.out.println("들어갈 방 번호 :");
+                    System.out.println("들어갈방번호:");
                     int i = scanner.nextInt();
                     startGame(i);
                     break;
@@ -76,7 +76,7 @@ public class Client {
     }
 
     private boolean enterRoom(int roomId) {
-        System.out.println("0: 도망자 1:추격자");
+        System.out.println("0: 도망자1:추격자");
         int i = scanner.nextInt();
         userState.setUserProperties(UserProperties.valueOf(i));
         return roomConnector.enterRoom(roomId,i);
