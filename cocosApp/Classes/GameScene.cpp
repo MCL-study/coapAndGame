@@ -100,7 +100,7 @@ void GameClient::addUserData(UserData* user)
 			auto tempSprite = Sprite::createWithTexture(green);
 			sprite->setSprite(tempSprite);
 		}
-		this->addChild(sprite->getSprite(),2);
+		sprite->addChild(this, 2);
 		userList.push_back(sprite);
 	}
 	updatePosition();
@@ -213,7 +213,8 @@ void GameClient::initSprite(int id,int properties)
 		auto sprite = Sprite::createWithTexture(greenPlayer);
 		playerSprite->setSprite(sprite);
 	}
-	addChild(playerSprite->getSprite(), 3);
+	playerSprite->addChild(this, 3);
+//	addChild(playerSprite->getSprite(), 3);
 }
 
 void GameClient::checkCollision()
@@ -224,7 +225,23 @@ void GameClient::checkCollision()
 			LocData locData = (*i)->getLocData();
 			LocData playerLocData = playerSprite->getLocData();
 			float distance =LocData::computeDistance(playerLocData.getLat(), playerLocData.getLng(), locData.getLat(), locData.getLng());
-			if (distance < 10) {
+			
+			//to do
+			float dY = LocData::computeDistanceLat(playerLocData.getLat(), locData.getLat());
+			float dX = LocData::computeDistanceLng(playerLocData.getLng(), locData.getLng());
+			auto visibleSize = Director::getInstance()->getVisibleSize();
+			auto screenCenter = visibleSize / 2;
+
+
+			Vec2 pos(screenCenter.width + dX / 2 * pixelPerMeter,screenCenter.height + dY / 2 * pixelPerMeter);
+			//drawNode->drawDot(pos, 20, Color4F::BLACK);
+			String str;
+			str.appendWithFormat("%dm ", (int)distance);
+			(*i)->setDistanceLabel(pos, str._string);
+			
+			//this->addChild(distanceLabel, 1);
+
+			if (distance < 5) {
 				if (playerSprite->getUserProperties() == UserProperties::CHASER) {
 					if ((*i)->getUserProperties() == UserProperties::FUGITIVE) {
 						log("catch : %d", (*i)->getId());

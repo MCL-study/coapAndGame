@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 
+import android.util.Log;
 import com.sylphe.app.dto.LocData;
 
 public class GpsInfo extends Service implements LocationListener {
@@ -175,7 +176,7 @@ public class GpsInfo extends Service implements LocationListener {
 
     public void onLocationChanged(Location location) {
         // TODO Auto-generated method stub
-
+        Log.d("chang Loc",location.getLatitude()+" "+location.getLongitude());
     }
 
     public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -194,7 +195,8 @@ public class GpsInfo extends Service implements LocationListener {
     }
 
     public LocData getLocData(){
-        Location location = getLocation();
-        return new LocData(location.getLatitude(),location.getLongitude());
+        if(location != null)
+            return new LocData(location.getLatitude(),location.getLongitude());
+        return new LocData(lat,lon);
     }
 }

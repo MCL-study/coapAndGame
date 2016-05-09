@@ -3,7 +3,7 @@ include ':server'
 include ':client'
 include ':DTO'
 include ':androidApp'
-project(':androidApp').projectDir = new File(settingsDir, 'app')
+project(':androidApp').projectDir = new File(settingsDir, 'androidApp')
 include ':libcocos2dx'
 project(':libcocos2dx').projectDir = new File(settingsDir, 'cocosApp/cocos2d/cocos/platform/android/libcocos2dx')
 include ':app'
