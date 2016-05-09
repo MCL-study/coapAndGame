@@ -11,6 +11,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.util.Log;
+import android.widget.Toast;
 import com.sylphe.app.dto.LocData;
 
 public class GpsInfo extends Service implements LocationListener {
@@ -33,8 +35,8 @@ public class GpsInfo extends Service implements LocationListener {
     // 최소 GPS 정보 업데이트 거리 5미터
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
 
-    // 최소 GPS 정보 업데이트 시간 밀리세컨이므로 1분
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    // 최소 GPS 정보 업데이트 시간 밀리세컨임
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 20;
 
     protected LocationManager locationManager;
 
@@ -58,8 +60,27 @@ public class GpsInfo extends Service implements LocationListener {
 
             if (!isGPSEnabled && !isNetworkEnabled) {
                 // GPS 와 네트워크사용이 가능하지 않을때 소스 구현
+                Toast.makeText(mContext,"gps와 네트워크를 확인해 주세요.",Toast.LENGTH_SHORT).show();
             } else {
                 this.isGetLocation = true;
+
+                if (isGPSEnabled) {
+                    if (location == null) {
+                        locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                                MIN_TIME_BW_UPDATES,
+                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                        if (locationManager != null) {
+                            location = locationManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            if (location != null) {
+                                lat = location.getLatitude();
+                                lon = location.getLongitude();
+                            }
+                        }
+                    }
+                }
+
                 // 네트워크 정보로 부터 위치값 가져오기 
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(
@@ -78,22 +99,7 @@ public class GpsInfo extends Service implements LocationListener {
                     }
                 }
 
-                if (isGPSEnabled) {
-                    if (location == null) {
-                        locationManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                MIN_TIME_BW_UPDATES,
-                                MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        if (locationManager != null) {
-                            location = locationManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                            if (location != null) {
-                                lat = location.getLatitude();
-                                lon = location.getLongitude();
-                            }
-                        }
-                    }
-                }
+
             }
 
         } catch (Exception e) {
@@ -174,6 +180,7 @@ public class GpsInfo extends Service implements LocationListener {
 
     public void onLocationChanged(Location location) {
         // TODO Auto-generated method stub
+        Log.d("chang Loc",location.getLatitude()+" "+location.getLongitude());
 
     }
 
@@ -193,11 +200,8 @@ public class GpsInfo extends Service implements LocationListener {
     }
 
     public LocData getLocData(){
-        Location location = getLocation();
-        if(location != null){
-            lat = location.getLatitude();
-            lon = location.getLongitude();
-        }
+        if(location != null)
+            return new LocData(location.getLatitude(),location.getLongitude());
         return new LocData(lat,lon);
     }
 }

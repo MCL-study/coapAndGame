@@ -46,6 +46,7 @@ public class AppActivity extends Cocos2dxActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         gpsInfo = new GpsInfo(this);
+
         URI uri=null;
         try {
             uri = new URI("coap://117.17.102.28");
