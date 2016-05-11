@@ -1,4 +1,4 @@
-package org.cocos2dx.cpp;
+package com.shylphe.lib.android.client;
 
 import com.sylphe.app.dto.UserProperties;
 import org.eclipse.californium.core.CoapClient;

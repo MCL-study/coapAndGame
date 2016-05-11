@@ -346,7 +346,7 @@ void GameClient::catchFugitive(int fugitiveId)
 #ifdef __cplusplus
 extern "C"
 #endif
-void Java_org_cocos2dx_cpp_GameClient_finishNotifyLocation(JNIEnv* ent, jobject obj, jdoubleArray arr) {
+void Java_org_cocos2dx_cpp_CocosGameClient_finishNotifyLocationNative(JNIEnv* ent, jobject obj, jdoubleArray arr) {
 	log("call c finishNotifyLocation");
 	jboolean bol = JNI_TRUE;
 	double* loc = (double*)ent->GetDoubleArrayElements(arr, &bol);
@@ -357,7 +357,7 @@ void Java_org_cocos2dx_cpp_GameClient_finishNotifyLocation(JNIEnv* ent, jobject 
 #ifdef __cplusplus
 extern "C"
 #endif
-void Java_org_cocos2dx_cpp_GameClient_finishUpdateAllLocation(JNIEnv* ent, jobject obj, jobjectArray userDatas) {
+void Java_org_cocos2dx_cpp_CocosGameClient_finishUpdateAllLocationNative(JNIEnv* ent, jobject obj, jobjectArray userDatas) {
 	int id = UserDefault::getInstance()->getIntegerForKey("id");
 	log("call c finishUpdateAllLocation");
 	int length = ent->GetArrayLength(userDatas);

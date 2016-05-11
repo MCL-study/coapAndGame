@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sylphe.cocosApp"
+    package="com.cocos2dx.cpp"
     android:installLocation="auto">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
@@ -15,7 +15,7 @@
         <!-- Tell Cocos2dxActivity the name of our .so -->
 		<meta-data android:name="android.app.lib_name"
 				   android:value="cocos2dcpp" />
-		
+
         <activity
             android:name="org.cocos2dx.cpp.AppActivity"
             android:screenOrientation="landscape"
@@ -30,6 +30,4 @@
         </activity>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    
 </manifest>

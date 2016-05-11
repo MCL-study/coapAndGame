@@ -1,14 +1,12 @@
-package org.cocos2dx.cpp;
+package com.shylphe.lib.android.client;
 
 import android.util.Log;
-
 import com.sylphe.app.dto.*;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapObserveRelation;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
-
 
 import java.net.URI;
 import java.util.List;
@@ -20,7 +18,7 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
 /**
  * Created by myks7 on 2016-03-15.
  */
-public class GameClient{
+public abstract class GameClient{
     private GpsInfo gpsInfo;
     private boolean aliveFlag;
     private CoapObserveRelation relation;
@@ -154,6 +152,6 @@ public class GameClient{
         aliveFlag =false;
     }
 
-    private native void finishNotifyLocation(double[] locData);
-    private native void finishUpdateAllLocation(UserData[] locData);
+    protected abstract void finishNotifyLocation(double[] locData);
+    protected abstract void finishUpdateAllLocation(UserData[] locData);
 }

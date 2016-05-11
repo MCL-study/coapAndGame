@@ -27,6 +27,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.shylphe.lib.android.client.GameClient;
+import com.shylphe.lib.android.client.GpsInfo;
+import com.shylphe.lib.android.client.Login;
+import com.shylphe.lib.android.client.RoomConnector;
 import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserProperties;
 import org.cocos2dx.lib.Cocos2dxActivity;
@@ -55,7 +59,7 @@ public class AppActivity extends Cocos2dxActivity {
         }
         login = new Login(uri);
         roomConnector = new RoomConnector(uri);
-        gameClient = new GameClient(uri,gpsInfo);
+        gameClient = new CocosGameClient(uri,gpsInfo);
         super.onCreate(savedInstanceState);
     }
 
