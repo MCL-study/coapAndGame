@@ -25,8 +25,11 @@ package org.cocos2dx.cpp;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
+import com.cocos2dx.cpp.R;
 import com.shylphe.lib.android.client.GameClient;
 import com.shylphe.lib.android.client.GpsInfo;
 import com.shylphe.lib.android.client.Login;
@@ -34,6 +37,8 @@ import com.shylphe.lib.android.client.RoomConnector;
 import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserProperties;
 import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
+import org.cocos2dx.lib.Cocos2dxRenderer;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,14 +46,25 @@ import java.util.List;
 
 
 public class AppActivity extends Cocos2dxActivity {
-
+    private Cocos2dxGLSurfaceView mGLView;
+    static public Handler handler;
     private static GpsInfo gpsInfo;
     private static Login login;
     private static RoomConnector roomConnector;
     private static GameClient gameClient;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        mGLView = (Cocos2dxGLSurfaceView) findViewById(R.id.game_gl_surfaceView);
+        //** ScrollView rendering problem fix
+        mGLView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
+        //**
+        mGLView.setEGLContextClientVersion(2);
+        mGLView.setCocos2dxRenderer(new Cocos2dxRenderer());
+
         gpsInfo = new GpsInfo(this);
 
         URI uri=null;
@@ -59,8 +75,8 @@ public class AppActivity extends Cocos2dxActivity {
         }
         login = new Login(uri);
         roomConnector = new RoomConnector(uri);
-        gameClient = new CocosGameClient(uri,gpsInfo);
-        super.onCreate(savedInstanceState);
+        gameClient = new CocosGameClient(uri,gpsInfo,mGLView);
+
     }
 
     public static double[] getLocation(){

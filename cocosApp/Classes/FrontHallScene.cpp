@@ -42,9 +42,7 @@ bool FrontHall::init()
 
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-	scrollView = new RoomScrollView(this,Size(visibleSize.width,visibleSize.height*0.8));
-	scrollView->setPosition(Vec2(80, 0));
-
+	
 	auto _screenSize = Director::getInstance()->getWinSize();
 
 	Sprite* background = Sprite::create("hall_bg.png");
@@ -52,6 +50,9 @@ bool FrontHall::init()
 	double scale = _screenSize.width / background->getContentSize().width;
 	background->setScale(scale);
 	this->addChild(background,0);
+	
+	scrollView = new RoomScrollView(this, Size(visibleSize.width, visibleSize.height*0.8));
+	scrollView->setPosition(Vec2(80, 0));
 
 	EventDispatcher* dispatcher = Director::getInstance()->getEventDispatcher();
 	auto keyListener = EventListenerKeyboard::create();

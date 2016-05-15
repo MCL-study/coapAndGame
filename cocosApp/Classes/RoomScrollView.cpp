@@ -10,6 +10,7 @@ RoomScrollView::RoomScrollView(Layer* layer,Size size)
 	view->setContentSize(size);
 	layer->addChild(view,1);
 	superView = layer;
+
 }
 
 void RoomScrollView::updateRoomConfigs(std::list<RoomConfig*>*  roomList)

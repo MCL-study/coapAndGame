@@ -1,8 +1,11 @@
 package org.cocos2dx.cpp;
 
+import android.os.Handler;
+import android.os.Message;
 import com.shylphe.lib.android.client.GameClient;
 import com.shylphe.lib.android.client.GpsInfo;
 import com.sylphe.app.dto.UserData;
+import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
 import java.net.URI;
 
@@ -10,18 +13,37 @@ import java.net.URI;
  * Created by myks7 on 2016-05-12.
  */
 public class CocosGameClient  extends GameClient{
-    public CocosGameClient(URI uri, GpsInfo gpsInfo) {
+    private Cocos2dxGLSurfaceView mGLView;
+    public CocosGameClient(URI uri, GpsInfo gpsInfo,Cocos2dxGLSurfaceView GLView) {
         super(uri, gpsInfo);
+        mGLView = GLView;
     }
+    private double[] locationData;
+    private UserData[] locationDatas;
 
     @Override
     protected void finishNotifyLocation(double[] locData) {
-        finishNotifyLocationNative(locData);
+        locationData=locData;
+        mGLView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                finishNotifyLocationNative(locationData);
+            }
+        });
+
+    //    finishNotifyLocationNative(locData);
     }
 
     @Override
     protected void finishUpdateAllLocation(UserData[] locData) {
-        finishUpdateAllLocationNative(locData);
+        locationDatas=locData;
+        mGLView.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                finishUpdateAllLocationNative(locationDatas);
+            }
+        });
+      //  finishUpdateAllLocationNative(locData);
     }
 
     private native void finishNotifyLocationNative(double[] locData);
