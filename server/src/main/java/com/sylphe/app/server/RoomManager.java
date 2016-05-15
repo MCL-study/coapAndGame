@@ -37,10 +37,10 @@ public class RoomManager {
         return null;
     }
 
-    public void enterRoom(int roomId, int userId,UserProperties userProperties){
+    public void enterRoom(int roomId, UserData userData){
         Room room = searchRoom(roomId);
         if (room != null) {
-            room.addUser(new UserData(userId,userProperties));
+            room.addUser(userData);
         }
     }
 

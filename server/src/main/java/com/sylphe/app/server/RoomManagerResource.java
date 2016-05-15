@@ -1,9 +1,6 @@
 package com.sylphe.app.server;
 
-import com.sylphe.app.dto.MsgType;
-import com.sylphe.app.dto.RoomConfig;
-import com.sylphe.app.dto.StreamListConverter;
-import com.sylphe.app.dto.UserProperties;
+import com.sylphe.app.dto.*;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
@@ -15,9 +12,11 @@ import java.util.List;
  */
 public class RoomManagerResource extends CoapResource {
     private RoomManager roomManager;
-    public RoomManagerResource(String name,RoomManager roomManager){
+    private UserManager userManager;
+    public RoomManagerResource(String name,RoomManager roomManager,UserManager userManager){
         super(name);
         this.roomManager = roomManager;
+        this.userManager =userManager;
     }
 
     @Override
@@ -30,13 +29,15 @@ public class RoomManagerResource extends CoapResource {
         }else if(format == MsgType.ENTER_ROOM){
             String payload = exchange.getRequestText();
             String[] ids = payload.split("/");
-            roomManager.enterRoom(Integer.parseInt(ids[0]),Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
+            UserData userData = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
+            roomManager.enterRoom(Integer.parseInt(ids[0]),userData);
             exchange.respond(ResponseCode.VALID);
         }
     }
 
     @Override
     public void handleGET(CoapExchange exchange) {
+        //return roomLIst
         List<Room> roomList = roomManager.getRoomList();
         if(roomList.size() != 0){
             StreamListConverter streamListConverter = new StreamListConverter(roomList.size(),roomList.get(0).getRoomConfig().getByteStream().length);

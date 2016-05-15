@@ -33,7 +33,7 @@ public class Server extends CoapServer {
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
         add(new LoginManagerResource("LoginManager", userManager));
-        add(new RoomManagerResource("RoomManager", roomManager));
+        add(new RoomManagerResource("RoomManager", roomManager,userManager));
         add(new GameObserveResource("gameObserve", roomManager));
     }
 

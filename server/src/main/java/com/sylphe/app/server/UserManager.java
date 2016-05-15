@@ -25,7 +25,24 @@ public class UserManager {
         return user;
     }
 
+    private UserData searchUser(int id){
+        for(UserData userData : userList){
+            if(userData.getId() == id){
+                return userData;
+            }
+        }
+        return null;
+    }
+
     private void addUser(UserData user){
         userList.add(user);
+    }
+
+    public UserData updateUserUserProperties(int id,UserProperties userProperties){
+        UserData user = searchUser(id);
+        if(user != null){
+            user.setUserProperties(userProperties);
+        }
+        return user;
     }
 }

@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
  */
 public class UserData {
     private final int id;
-    private final UserProperties userProperties;
+    private UserProperties userProperties;
     private LocData locData;
 
     public UserData(int id, UserProperties userProperties, LocData location){
@@ -60,5 +60,8 @@ public class UserData {
     }
     public int getUserPropertiesValue() {
         return userProperties.value;
+    }
+    public void setUserProperties(UserProperties userProperties){
+        this.userProperties = userProperties;
     }
 }
