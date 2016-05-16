@@ -22,17 +22,17 @@ public class GpsInfo extends Service implements LocationListener {
     private final Context mContext;
 
     // 현재 GPS 사용유무
-    boolean isGPSEnabled = false;
+    private boolean isGPSEnabled = false;
 
     // 네트워크 사용유무 
-    boolean isNetworkEnabled = false;
+    private boolean isNetworkEnabled = false;
 
     // GPS 상태값
-    boolean isGetLocation = false;
+    private boolean isGetLocation = false;
 
-    Location location;
-    double lat; // 위도 
-    double lon; // 경도
+    private Location location;
+    private double lat; // 위도
+    private double lon; // 경도
 
     // 최소 GPS 정보 업데이트 거리 5미터
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;

@@ -96,7 +96,7 @@ public abstract class GameClient{
         client.put(new HandlerSendResult(), locationMessage.getStream(), MsgType.USER_DATA);
 
     }
-    class HandlerSendResult implements CoapHandler{
+    private class HandlerSendResult implements CoapHandler{
 
         @Override
         public void onLoad(CoapResponse response) {
