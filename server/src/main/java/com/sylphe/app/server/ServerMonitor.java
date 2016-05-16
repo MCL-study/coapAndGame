@@ -67,7 +67,7 @@ class ServerMonitor {
         System.out.println("생성된 게임 공간의 수 : "+roomList.size());
         for(Room room : roomList){
             System.out.println("spaceID : "+room.getRoomId()+" ");
-            ServerMonitor.log(room.getRoomID()+"번 방; 제한시간:"+room.getTimeLimit()+"초 최대참가인원"+room.getMaxGameMember()+"명 범위"+room.getScale()+"m");
+            System.out.println(room.getRoomID()+"번 게임공간; 제한시간:"+room.getTimeLimit()+"초 최대참가인원"+room.getMaxGameMember()+"명 범위"+room.getScale()+"m");
         }
     }
     private void showGameProcess(int spaceID){

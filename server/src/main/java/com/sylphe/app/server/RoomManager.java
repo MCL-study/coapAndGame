@@ -23,7 +23,7 @@ class RoomManager {
         Room room = new Room(roomId,config);
         roomId++;
         roomList.add(room);
-        ServerMonitor.log("방 생성 됨 spaceID"+room.getRoomId());
+        ServerMonitor.log("게임공간 생성 됨 spaceID : "+room.getRoomId());
         return room;
     }
 

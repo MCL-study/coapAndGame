@@ -24,13 +24,13 @@ class RoomManagerResource extends CoapResource {
         int format = exchange.getRequestOptions().getContentFormat();
         if(format == MsgType.MAKE_ROOM){
             RoomConfig config = new RoomConfig(exchange.getRequestPayload());
-            ServerMonitor.log("방 생성 요청 받음; 제한시간:"+config.getTimeLimit()+"초 최대참가인원"+config.getMaxGameMember()+"명 범위"+config.getScale()+"m");
+            ServerMonitor.log("게임공간 생성 요청 받음; 제한시간:"+config.getTimeLimit()+"초 최대참가인원"+config.getMaxGameMember()+"명 범위"+config.getScale()+"m");
             Room room = roomManager.createRoom(config);
             exchange.respond(ResponseCode.VALID,room.getRoomConfig().getByteStream());
         }else if(format == MsgType.ENTER_ROOM){
             String payload = exchange.getRequestText();
             String[] ids = payload.split("/");
-            ServerMonitor.log(Integer.parseInt(ids[0])+"번방 접속 요청 받음 = id : "+Integer.parseInt(ids[1]));
+            ServerMonitor.log(Integer.parseInt(ids[0])+"번 게임공간 접속 요청 받음 = id : "+Integer.parseInt(ids[1]));
             UserData userData = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
             roomManager.enterRoom(Integer.parseInt(ids[0]),userData);
             exchange.respond(ResponseCode.VALID);
@@ -50,6 +50,7 @@ class RoomManagerResource extends CoapResource {
             }
             ServerMonitor.log("게임 공간 목록 반환");
             exchange.respond(ResponseCode.VALID, streamListConverter.getStream());
+            return;
         }
         ServerMonitor.log("게임공간 하나도 존재하지 않음");
         exchange.respond(ResponseCode.NOT_FOUND);
