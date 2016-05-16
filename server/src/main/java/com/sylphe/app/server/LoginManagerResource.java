@@ -16,9 +16,10 @@ class LoginManagerResource extends CoapResource {
 
     @Override
     public void handleGET(CoapExchange exchange) {
-
+        ServerMonitor.log("로그인 요청 받음");
         UserData user =  userManager.createUser();
         Integer integer = user.getId();
+        ServerMonitor.log("respond");
         exchange.respond(integer.toString());
     }
 }

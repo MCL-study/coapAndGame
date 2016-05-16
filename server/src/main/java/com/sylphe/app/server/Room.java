@@ -66,4 +66,20 @@ class Room {
         UserData userData = searchUser(userId);
         userList.remove(userData);
     }
+
+    int getRoomID() {
+        return roomId;
+    }
+
+    int getMaxGameMember() {
+        return maxGameMember;
+    }
+
+    int getTimeLimit() {
+        return timeLimit;
+    }
+
+    int getScale() {
+        return scale;
+    }
 }

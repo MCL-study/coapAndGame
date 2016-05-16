@@ -17,12 +17,12 @@ public class GpsInfo {
 
     public LocData getLocation(){
         if(lat<1) {
-            lng += 0.1;
-            lat += 0.1;
+            lng += 0.0001;
+            lat += 0.0001;
         }else if(lat>1){
             lng = -0.5;
             lat = -0.5;
         }
-        return new LocData(33.515273835+ lat,126.62505584 + lng);
+        return new LocData(33.45500658+ lat,126.56507811 + lng);
     }
 }

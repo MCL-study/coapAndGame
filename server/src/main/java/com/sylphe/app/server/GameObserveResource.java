@@ -54,18 +54,16 @@ class GameObserveResource extends CoapResource {
             LocationMessage locationMessage = new LocationMessage(roomId,userList.size(),UserData.getSize());
             for(UserData data : userList){
                 locationMessage.addUserDataStream(data.getStream());
-            //    System.out.println(data.getId()+" "+data.getLocData().getLng()+" "+data.getLocData().getLat());
             }
-                    exchange.respond(VALID,locationMessage.getStream());
+            ServerMonitor.log(roomId+"번 방 총"+userList.size()+"개의 위치 정보 전송");
+            exchange.respond(VALID,locationMessage.getStream());
         }
-        System.out.println("handleGET");
     }
 
     @Override
     public void handleDELETE(CoapExchange exchange) {
         delete(); // will also call clearAndNotifyObserveRelations(ResponseCode.NOT_FOUND)
         exchange.respond(DELETED);
-        System.out.println("handleDELETE");
     }
 
     @Override
@@ -82,6 +80,7 @@ class GameObserveResource extends CoapResource {
                 roomManager.removeDeleteUser(userData.getId());
             }else{
                 int roomId = locationMessage.getRoomId();
+                ServerMonitor.log(roomId+"방 id"+userData.getId()+"USER_DATA 메세지 받음 "+userData.getLocData().getLat()+","+userData.getLocData().getLng());
                 roomManager.updateUserData(roomId, userData);
                 exchange.respond(VALID);
             }
@@ -90,6 +89,7 @@ class GameObserveResource extends CoapResource {
             String[] split = requestText.split("/");
             int roomId = Integer.parseInt(split[0]);
             int fugitiveId = Integer.parseInt(split[1]);
+            ServerMonitor.log(roomId+"방 CATCH_FUGITIVE 메세지 받음 id:"+fugitiveId+"잡힘");
             roomManager.deleteUser(roomId,fugitiveId);
             exchange.respond(VALID);
         }else if(contentFormat == MsgType.DIE_PLAYER){
@@ -97,12 +97,12 @@ class GameObserveResource extends CoapResource {
             String[] split = requestText.split("/");
             int roomId = Integer.parseInt(split[0]);
             Integer playerId = Integer.parseInt(split[1]);
+            ServerMonitor.log(roomId+"방 DIE_PLAYER 메세지 받음 id:"+playerId+"죽음");
             roomManager.deleteUser(roomId,playerId);
             exchange.respond(DELETED);
         }
         //exchange.respond(CHANGED);
 //        changed(); // notify all observers
-        System.out.println("handlePUT");
 
     }
 }

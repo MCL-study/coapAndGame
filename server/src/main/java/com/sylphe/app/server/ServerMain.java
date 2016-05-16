@@ -7,9 +7,13 @@ import java.net.SocketException;
  */
 public class ServerMain {
     public static void main(String[] args) {
+        UserManager userManager = new UserManager();
+        RoomManager roomManager = new RoomManager();
+        ServerMonitor serverMonitor = new ServerMonitor(roomManager,userManager);
+        serverMonitor.start();
         try {
             // create server
-            Server server = new Server();
+            Server server = new Server(roomManager,userManager);
             // add endpoints on all IP addresses
             server.addEndpoints();
             server.start();

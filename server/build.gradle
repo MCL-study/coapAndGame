@@ -12,3 +12,5 @@ dependencies {
     compile 'org.eclipse.californium:californium-core:1.1.0-SNAPSHOT'
     compile project(':DTO')
 }
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

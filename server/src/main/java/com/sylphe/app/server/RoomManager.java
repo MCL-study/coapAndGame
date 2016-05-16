@@ -23,6 +23,7 @@ class RoomManager {
         Room room = new Room(roomId,config);
         roomId++;
         roomList.add(room);
+        ServerMonitor.log("방 생성 됨 spaceID"+room.getRoomId());
         return room;
     }
 
@@ -45,7 +46,9 @@ class RoomManager {
     }
 
     List<Room> getRoomList(){
-        return roomList;
+        List<Room> rooms = new ArrayList<Room>();
+        rooms.addAll(roomList);
+        return rooms;
     }
 
     void updateUserData(int roomId, UserData userData) {

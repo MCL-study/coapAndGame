@@ -19,6 +19,7 @@ class UserManager {
     }
 
     UserData createUser(){
+        ServerMonitor.log("사용자 생성 id:"+id);
         UserData user = new UserData(id, UserProperties.NOT_DEFINE);
         id++;
         addUser(user);
@@ -40,10 +41,14 @@ class UserManager {
 
     UserData updateUserUserProperties(int id, UserProperties userProperties){
         UserData user = searchUser(id);
-        //assert
-        if(user != null){
-            user.setUserProperties(userProperties);
-        }
+        assert(user==null):"assert updateUserUserProperties use==null";
+        ServerMonitor.log("update UserProperties");
+        user.setUserProperties(userProperties);
         return user;
+    }
+    public List<UserData> getUserList(){
+        ArrayList<UserData> result = new ArrayList<UserData>();
+        result.addAll(userList);
+        return result;
     }
 }
