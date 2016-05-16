@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * Created by myks7 on 2016-03-15.
  */
-public class RoomManagerResource extends CoapResource {
+class RoomManagerResource extends CoapResource {
     private RoomManager roomManager;
     private UserManager userManager;
-    public RoomManagerResource(String name,RoomManager roomManager,UserManager userManager){
+    RoomManagerResource(String name, RoomManager roomManager, UserManager userManager){
         super(name);
         this.roomManager = roomManager;
         this.userManager =userManager;
@@ -32,6 +32,7 @@ public class RoomManagerResource extends CoapResource {
             UserData userData = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
             roomManager.enterRoom(Integer.parseInt(ids[0]),userData);
             exchange.respond(ResponseCode.VALID);
+            //방 정보 넘길 것
         }
     }
 

@@ -10,23 +10,23 @@ import java.util.List;
 /**
  * Created by myks7 on 2016-03-15.
  */
-public class RoomManager {
+class RoomManager {
     private List<Integer> deleteUserList;
     private List<Room> roomList;
     private int roomId;
-    public RoomManager(){
+    RoomManager(){
         roomList= new ArrayList<Room>();
         deleteUserList = new ArrayList<Integer>();
         roomId=0;
     }
-    public Room createRoom(RoomConfig config){
+    Room createRoom(RoomConfig config){
         Room room = new Room(roomId,config);
         roomId++;
         roomList.add(room);
         return room;
     }
 
-    public Room searchRoom(int roomId){
+    Room searchRoom(int roomId){
         for (Room room : roomList) {
             if (room.getRoomId() == roomId)
                 return room;
@@ -37,35 +37,35 @@ public class RoomManager {
         return null;
     }
 
-    public void enterRoom(int roomId, UserData userData){
+    void enterRoom(int roomId, UserData userData){
         Room room = searchRoom(roomId);
         if (room != null) {
             room.addUser(userData);
         }
     }
 
-    public List<Room> getRoomList(){
+    List<Room> getRoomList(){
         return roomList;
     }
 
-    public void updateUserData(int roomId, UserData userData) {
+    void updateUserData(int roomId, UserData userData) {
         Room room = searchRoom(roomId);
         if (room != null) {
             room.searchUserAndUpdate(userData);
         }
     }
 
-    public void deleteUser(int roomId, int userId){
+    void deleteUser(int roomId, int userId){
         Room room = searchRoom(roomId);
         room.deleteUser(userId);
         deleteUserList.add(userId);
     }
 
-    public boolean existDeleteUser(int userId){
+    boolean existDeleteUser(int userId){
         return deleteUserList.contains(userId);
     }
 
-    public void removeDeleteUser(Integer userId){
+    void removeDeleteUser(Integer userId){
         deleteUserList.remove(userId);
     }
 }

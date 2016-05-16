@@ -26,10 +26,10 @@ import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.network.config.NetworkConfig;
 
 
-public class Server extends CoapServer {
+class Server extends CoapServer {
     private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
 
-    public Server() throws SocketException {
+    Server() throws SocketException {
         UserManager userManager = new UserManager();
         RoomManager roomManager = new RoomManager();
         add(new LoginManagerResource("LoginManager", userManager));
@@ -40,7 +40,7 @@ public class Server extends CoapServer {
     /**
      * Add individual endpoints listening on default CoAP port on all IPv4 addresses of all network interfaces.
      */
-    public void addEndpoints() {
+    void addEndpoints() {
     	for (InetAddress addr : EndpointManager.getEndpointManager().getNetworkInterfaces()) {
     		// only binds to IPv4 addresses and localhost
 			if (addr instanceof Inet4Address || addr.isLoopbackAddress()) {

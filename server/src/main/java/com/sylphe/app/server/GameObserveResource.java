@@ -18,10 +18,10 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
 /**
  * Created by myks7 on 2016-03-14.
  */
-public class GameObserveResource extends CoapResource {
+class GameObserveResource extends CoapResource {
     private RoomManager roomManager;
 
-    public GameObserveResource(String name,RoomManager roomManager) {
+    GameObserveResource(String name, RoomManager roomManager) {
         super(name);
         this.roomManager = roomManager;
         setObservable(true); // enable observing

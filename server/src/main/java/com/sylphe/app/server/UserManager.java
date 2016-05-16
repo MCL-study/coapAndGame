@@ -9,16 +9,16 @@ import java.util.List;
 /**
  * Created by myks7 on 2016-03-15.
  */
-public class UserManager {
+class UserManager {
 
     private List<UserData> userList;
     private int id;
-    public UserManager(){
+    UserManager(){
         userList = new ArrayList<UserData>();
         id=0;
     }
 
-    public UserData createUser(){
+    UserData createUser(){
         UserData user = new UserData(id, UserProperties.NOT_DEFINE);
         id++;
         addUser(user);
@@ -38,8 +38,9 @@ public class UserManager {
         userList.add(user);
     }
 
-    public UserData updateUserUserProperties(int id,UserProperties userProperties){
+    UserData updateUserUserProperties(int id, UserProperties userProperties){
         UserData user = searchUser(id);
+        //assert
         if(user != null){
             user.setUserProperties(userProperties);
         }

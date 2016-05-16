@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by myks7 on 2016-03-14.
  */
-public class Room {
+class Room {
     private int roomId;
     private int maxGameMember;
 //    private int currentChaserNum, currentFugitiveNum;
@@ -19,7 +19,7 @@ public class Room {
     private List<UserData> userList;
     private int timeLimit;
 
-    public Room(int roomId ,RoomConfig config){
+    Room(int roomId, RoomConfig config){
         userList = new ArrayList<UserData>();
         this.roomId = roomId;
         maxGameMember = config.getMaxGameMember();
@@ -28,15 +28,15 @@ public class Room {
         timeLimit = config.getTimeLimit();
     }
 
-    public int getRoomId() {
+    int getRoomId() {
         return roomId;
     }
 
-    public RoomConfig getRoomConfig(){
+    RoomConfig getRoomConfig(){
         return new RoomConfig(roomId,centerLoc,maxGameMember,scale,timeLimit);
     }
 
-    public void addUser(UserData user){
+    void addUser(UserData user){
         userList.add(user);
     }
 
@@ -49,7 +49,7 @@ public class Room {
         return null;
     }
 
-    public void searchUserAndUpdate(UserData userData) {
+    void searchUserAndUpdate(UserData userData) {
         UserData user = searchUser(userData.getId());
         if (user != null) {
             user.setLocData(userData.getLocData());
@@ -58,11 +58,11 @@ public class Room {
         }
     }
 
-    public List<UserData> getUserList() {
+    List<UserData> getUserList() {
         return userList;
     }
 
-    public void deleteUser(int userId){
+    void deleteUser(int userId){
         UserData userData = searchUser(userId);
         userList.remove(userData);
     }
