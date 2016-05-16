@@ -8,14 +8,6 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
-    packagingOptions {
-        exclude 'notice.html'
-        exclude 'META-INF/ECLIPSE_.RSA'
-        exclude 'META-INF/ECLIPSE_.SF'
-        exclude 'edl-v10.html'
-        exclude 'epl-v10.html'
-    }
-
     defaultConfig {
         applicationId "com.sylphe.app"
         minSdkVersion 10
@@ -24,12 +16,24 @@ android {
         versionName "1.0"
     }
 
+    packagingOptions {
+        exclude 'notice.html'
+        exclude 'META-INF/ECLIPSE_.RSA'
+        exclude 'META-INF/ECLIPSE_.SF'
+        exclude 'edl-v10.html'
+        exclude 'epl-v10.html'
+    }
+
     sourceSets.main {
         java.srcDir "src"
         res.srcDir "res"
         jniLibs.srcDir "libs"
         manifest.srcFile "AndroidManifest.xml"
         assets.srcDir "assets"
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     signingConfigs {

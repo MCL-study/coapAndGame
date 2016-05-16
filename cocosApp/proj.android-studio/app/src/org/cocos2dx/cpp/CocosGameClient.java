@@ -12,9 +12,9 @@ import java.net.URI;
 /**
  * Created by myks7 on 2016-05-12.
  */
-public class CocosGameClient  extends GameClient{
+class CocosGameClient  extends GameClient{
     private Cocos2dxGLSurfaceView mGLView;
-    public CocosGameClient(URI uri, GpsInfo gpsInfo,Cocos2dxGLSurfaceView GLView) {
+    CocosGameClient(URI uri, GpsInfo gpsInfo, Cocos2dxGLSurfaceView GLView) {
         super(uri, gpsInfo);
         mGLView = GLView;
     }
