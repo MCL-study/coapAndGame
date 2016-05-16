@@ -80,7 +80,7 @@ class GameObserveResource extends CoapResource {
                 roomManager.removeDeleteUser(userData.getId());
             }else{
                 int roomId = locationMessage.getRoomId();
-                ServerMonitor.log(roomId+"번 게임공간 id"+userData.getId()+"USER_DATA 메세지 받음 "+userData.getLocData().getLat()+","+userData.getLocData().getLng());
+                ServerMonitor.log(roomId+"번 게임공간 id:"+userData.getId()+" USER_DATA 메세지 받음 "+userData.getLocData().getLat()+","+userData.getLocData().getLng());
                 roomManager.updateUserData(roomId, userData);
                 exchange.respond(VALID);
             }
