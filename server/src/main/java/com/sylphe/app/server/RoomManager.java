@@ -38,11 +38,13 @@ class RoomManager {
         return null;
     }
 
-    void enterRoom(int roomId, UserData userData){
+    Room enterRoom(int roomId, UserData userData){
         Room room = searchRoom(roomId);
         if (room != null) {
             room.addUser(userData);
+            return room;
         }
+        return null;
     }
 
     List<Room> getRoomList(){

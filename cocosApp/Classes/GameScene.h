@@ -4,13 +4,14 @@
 #include "cocos2d.h"
 #include "UserDataSprite.h"
 #include "LocData.h"
+#include "RoomConfig.h"
 #include <math.h>
 class GameClient : public cocos2d::Layer
 {
 private:
 	std::list<UserDataSprite*> userList;
 	UserDataSprite* playerSprite;
-	int enterRoom(int roomid, int  id, int  properties);
+	RoomConfig* enterRoom(int roomid, int  id, int  properties);
 	void startGame(int roomid, int  id, int  properties);
 	void requestStartGame(int roomid, int id, int properties);
 	void close();
@@ -46,7 +47,7 @@ private:
 
 	cocos2d::DrawNode* drawNode;
 	int roomScale;
-	LocData* roomCenter;
+	LocData roomCenter;
 	void drawRoomScale();
 	
 	virtual bool init();

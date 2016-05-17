@@ -71,6 +71,7 @@ public class AppActivity extends Cocos2dxActivity {
         URI uri=null;
         try {
             uri = new URI("coap://117.17.102.28");
+      //      uri = new URI("coap://192.168.0.29");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -90,10 +91,12 @@ public class AppActivity extends Cocos2dxActivity {
         return login.getId();
     }
 
-    public static int enterRoom(int roomId,int id,int userProperties){
-        if(roomConnector.enterRoom(roomId, id, UserProperties.valueOf(userProperties)))
-            return 1;
-        return -1;
+    public static RoomConfig enterRoom(int roomId,int id,int userProperties){
+        RoomConfig roomConfig = roomConnector.enterRoom(roomId, id, UserProperties.valueOf(userProperties));
+        if(roomConfig !=null)
+            return roomConfig;
+        System.out.println("enterRoom : roomConfig null");
+        return null;
     }
 
     public static int makeRoom(int maxGameMember,int scale, int timeLimit){
@@ -128,10 +131,5 @@ public class AppActivity extends Cocos2dxActivity {
 
     public static void closeGameClient(){
         gameClient.close();
-/*        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
     }
 }

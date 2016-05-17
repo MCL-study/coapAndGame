@@ -133,16 +133,15 @@ void GameClient::onEnter()
 }
 
 void GameClient::startGame(int roomid, int  id, int  properties) {
-	int bol = enterRoom(roomid, id, properties);
-	if (bol == -1) {
+	RoomConfig* roomConfig= enterRoom(roomid, id, properties);
+	if (roomConfig == nullptr) {
 		log("enterRoom error");
 	}
 	else {
 		requestStartGame(roomid, id, properties);
-		//-- 안드로이드에서 받아오는거 추가할것
-		roomCenter = new LocData(33.4539018, 126.56512159);
-		roomScale = 500;
-		//--
+		roomCenter = roomConfig->getCenterLoc();
+		roomScale = roomConfig->getScale();
+		delete roomConfig;
 	}
 }
 
@@ -188,12 +187,10 @@ void GameClient::drawRoomScale()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto screenCenter = visibleSize / 2;
 	auto playerLoc = playerSprite->getLocData();
-	float dY = LocData::computeDistanceLat(playerLoc.getLat(), roomCenter->getLat());
-	float dX = LocData::computeDistanceLng(playerLoc.getLng(), roomCenter->getLng());
+	float dY = LocData::computeDistanceLat(playerLoc.getLat(), roomCenter.getLat());
+	float dX = LocData::computeDistanceLng(playerLoc.getLng(), roomCenter.getLng());
 	drawNode->clear();
 	drawNode->drawDot(Vec2(screenCenter.width + dX*pixelPerMeter, screenCenter.height+ dY*pixelPerMeter), roomScale*pixelPerMeter, Color4F::GRAY);
-//	log("drawRoomScale %f %f %f", dX, dY, pixelPerMeter);
-//	log("%f", LocData::computeDistanceAndBearing(playerLoc.getLat(), playerLoc.getLng(), roomCenter->getLat(), roomCenter->getLng()));
 }
 
 void GameClient::initSprite(int id,int properties)
@@ -374,20 +371,29 @@ void Java_org_cocos2dx_cpp_CocosGameClient_finishUpdateAllLocationNative(JNIEnv*
 }
 #endif
 
-
-int GameClient::enterRoom(int roomid, int  id, int  properties) {
+#include "RoomConfigJNIUtil.h"
+RoomConfig* GameClient::enterRoom(int roomid, int  id, int  properties) {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
 	JniMethodInfo t;
-	jint bol = -1;
+	jobject jobj = NULL;
+	RoomConfig* roomConfig;
 	log("call enter room");
 	if (JniHelper::getStaticMethodInfo(t
 		, "org/cocos2dx/cpp/AppActivity"
 		, "enterRoom"
-		, "(III)I")) {
-		bol = (jint)t.env->CallStaticIntMethod(t.classID, t.methodID, roomid, id, properties);
+		, "(III)Lcom/sylphe/app/dto/RoomConfig;")) {
+		jobj = (jobject)t.env->CallStaticObjectMethod(t.classID, t.methodID, roomid, id, properties);
+
+		RoomCfgJNIUtil *roomUtil = RoomCfgJNIUtil::getInstance();
+		
+		int roomid = roomUtil->getRoomID(jobj);
+		int maxGameMember = roomUtil->getMaxGameMember(jobj);
+		int scale = roomUtil->getScale(jobj);
+		LocData centerLoc = roomUtil->getCenterLocData(jobj);
+		roomConfig = new RoomConfig(roomid, centerLoc, maxGameMember, scale);
 	}
 	t.env->DeleteLocalRef(t.classID);
-	return bol;
+	return roomConfig;
 #endif
-	return -1;
+	return nullptr;
 }

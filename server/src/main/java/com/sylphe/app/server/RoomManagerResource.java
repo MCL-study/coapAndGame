@@ -32,9 +32,8 @@ class RoomManagerResource extends CoapResource {
             String[] ids = payload.split("/");
             ServerMonitor.log(Integer.parseInt(ids[0])+"번 게임공간 접속 요청 받음 = id : "+Integer.parseInt(ids[1]));
             UserData userData = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
-            roomManager.enterRoom(Integer.parseInt(ids[0]),userData);
-            exchange.respond(ResponseCode.VALID);
-            //방 정보 넘길 것
+            Room room = roomManager.enterRoom(Integer.parseInt(ids[0]),userData);
+            exchange.respond(ResponseCode.VALID,room.getRoomConfig().getByteStream());
         }
     }
 

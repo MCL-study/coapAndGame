@@ -35,15 +35,15 @@ public class RoomConnector {
         return -1;
     }
 
-    public boolean enterRoom(int roomId,int id,UserProperties userProperties){
+    public RoomConfig enterRoom(int roomId,int id,UserProperties userProperties){
         CoapResponse response = client.put(roomId + "/" + id + "/" + userProperties.value, MsgType.ENTER_ROOM);
         if(response!=null) {
             if (response.getCode() == ResponseCode.VALID) {
                 System.out.println("접속 요청 완료");
-                return true;
+                return new RoomConfig(response.getPayload());
             }
         }
-        return false;
+        return null;
     }
 
     public List<RoomConfig> getRoomList(){

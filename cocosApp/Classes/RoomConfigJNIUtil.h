@@ -1,6 +1,7 @@
 #ifndef __ROOM_CONFIG_JNI_UTIL_H_
 #define __ROOM_CONFIG_JNI_UTIL_H_
 #include "platform\android\jni\JniHelper.h"
+#include "LocDataJNIUtil.h"
 
 class RoomCfgJNIUtil {
 private:
@@ -8,6 +9,7 @@ private:
 	cocos2d::JniMethodInfo getRoomIDInfo;
 	cocos2d::JniMethodInfo getMaxGameMemberInfo;
 	cocos2d::JniMethodInfo getScaleInfo;
+	cocos2d::JniMethodInfo getCenterLocInfo;
 	RoomCfgJNIUtil() {
 		cocos2d::JniHelper::getMethodInfo(getRoomIDInfo
 			, "com/sylphe/app/dto/RoomConfig"
@@ -21,6 +23,10 @@ private:
 			, "com/sylphe/app/dto/RoomConfig"
 			, "getScale"
 			, "()I");
+		cocos2d::JniHelper::getMethodInfo(getCenterLocInfo
+			, "com/sylphe/app/dto/RoomConfig"
+			, "getCenterLoc"
+			, "()Lcom/sylphe/app/dto/LocData;");
 	}
 public:
 	~RoomCfgJNIUtil() {}
@@ -43,6 +49,12 @@ public:
 		int scale = getScaleInfo.env->CallIntMethod(obj, getScaleInfo.methodID);
 		return scale;
 	};
+	LocData getCenterLocData(jobject obj) {
+		jobject jobj = getCenterLocInfo.env->CallObjectMethod(obj, getCenterLocInfo.methodID);
+		LocDataJNIUtil *locDataJNIUtil = LocDataJNIUtil::getInstance();
+		LocData result = locDataJNIUtil->getLocData(jobj);
+		return result;
+	}
 };
 
 #endif

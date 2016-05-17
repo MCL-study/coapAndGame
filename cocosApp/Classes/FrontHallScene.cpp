@@ -116,9 +116,7 @@ void FrontHall::refreshRoomCallback(Ref* pSender) {
 	std::list<RoomConfig*>* roomList = refreshRoom();
 	log("refreshRoomCalback call");
 	if(roomList == NULL){
-		log("roomClearLabel set call");
 		roomClearLabel->setVisible(true);
-		log("roomClearLabel set2 call");
 	}else if (roomList->size() != 0) {
 		roomClearLabel->setVisible(false);
 		scrollView->updateRoomConfigs(roomList);
@@ -141,7 +139,6 @@ std::list<RoomConfig*>* FrontHall::refreshRoom() {
 		log("refreshRoom Call : CallStaticObjectMethod");
 		if (objArr == NULL)
 			return NULL;
-		log("refreshRoom Call : GetArrayLength b");
 		jsize objArrLength = t.env->GetArrayLength(objArr);
 		log("refreshRoom Call : GetArrayLength");
 		int arrSize = (int)objArrLength;

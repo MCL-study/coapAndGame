@@ -15,7 +15,7 @@ float LocData::computeDistance(double lat1, double lon1, double lat2, double lon
 	double f = (a - b) / a;
 	double aSqMinusBSqOverBSq = (a * a - b * b) / (b * b);
 
-	double L = lon2 - lon1;
+	double L = lon2 - lon1; 
 	double A = 0.0;
 	double U1 = atan((1.0 - f) * tan(lat1));
 	double U2 = atan((1.0 - f) * tan(lat2));
