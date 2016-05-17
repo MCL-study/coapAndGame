@@ -61,6 +61,7 @@ public class AppActivity extends Cocos2dxActivity {
         mGLView = (Cocos2dxGLSurfaceView) findViewById(R.id.game_gl_surfaceView);
         //** ScrollView rendering problem fix
         mGLView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
+        mGLView.setKeepScreenOn(true);
         //**
         mGLView.setEGLContextClientVersion(2);
         mGLView.setCocos2dxRenderer(new Cocos2dxRenderer());
