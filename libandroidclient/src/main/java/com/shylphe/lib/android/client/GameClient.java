@@ -39,8 +39,6 @@ public abstract class GameClient{
         player = new UserData(id,userProperties);
         aliveFlag = true;
         relation = client.observe(new handler(), roomId);
-//        timer = new Timer();
-//        timer.schedule(new NotifyLocationTask(), 0, 1000);
     }
 
     public void close() {

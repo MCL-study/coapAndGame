@@ -38,7 +38,7 @@ public class GpsInfo extends Service implements LocationListener {
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 5;
 
     // 최소 GPS 정보 업데이트 시간 밀리세컨임
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 20;
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 1;
 
     protected LocationManager locationManager;
 
