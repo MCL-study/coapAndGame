@@ -10,7 +10,7 @@ import java.net.URI;
  * Created by myks7 on 2016-03-15.
  */
 public class AccessClient {
-    private int id=-1;
+
     private final CoapClient client;
 
 
@@ -18,15 +18,14 @@ public class AccessClient {
         client = new CoapClient(uri+"/AccessManager");
     }
 
-    public void login(){
+    public Integer login(){
      //   client.put("",MsgType.REQUEST_ID);
         CoapResponse response = client.get();
         if (response!=null) {
-            id = Integer.valueOf(response.getResponseText());
+            int id = Integer.valueOf(response.getResponseText());
+            return id;
         }
+        return null;
     }
 
-    public int getId(){
-        return id;
-    }
 }

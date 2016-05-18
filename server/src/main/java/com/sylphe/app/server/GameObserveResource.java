@@ -72,7 +72,7 @@ class GameObserveResource extends CoapResource {
         int contentFormat = exchange.getRequestOptions().getContentFormat();
         if(contentFormat == MsgType.USER_DATA){
             byte[] requestPayload = exchange.getRequestPayload();
-            LocationMessage locationMessage = new LocationMessage(requestPayload, requestPayload.length);
+            LocationMessage locationMessage = new LocationMessage(requestPayload);
             List<UserData> userDataList = locationMessage.getUserDataList();
             UserData userData = userDataList.get(0);
             if(roomManager.existDeleteUser(userData.getId())){

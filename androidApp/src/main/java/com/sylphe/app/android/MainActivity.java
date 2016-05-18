@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
+import com.shylphe.lib.android.client.AccessClient;
+import com.shylphe.lib.android.client.GpsInfo;
+import com.shylphe.lib.android.client.RoomConnector;
 import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserProperties;
 
@@ -22,11 +25,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private URI uri;
-    private UserState userState;
+    private AccessClient accessClient;
     private RoomConnector roomConnector;
-    private GameClientActivity gameClientActivity;
     private GpsInfo gpsInfo;
     private EditText editTextEnterRoom;
+    private UserState userState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        userState = new UserState();
 
         gpsInfo = new GpsInfo(this);
-        userState = new UserState(uri);
-        userState.login();
-        roomConnector = new RoomConnector(uri, userState);
-        //gameClientActivity = new GameClientActivity(uri,userState,this);
+        accessClient = new AccessClient(uri);
+        int id = accessClient.login();
+        userState.setId( id);
+
+        roomConnector = new RoomConnector(uri);
 
         Button btnMakeRoom = (Button) findViewById(R.id.btnMakeRoom);
         Button btnSearchRoom = (Button) findViewById(R.id.btnSearchRoom);
@@ -57,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 Integer roomId = roomConnector.makeRoom(gpsInfo.getLocData(), 10, 600,9999);
                 if(roomId != null){
                     Toast.makeText(MainActivity.this, "성공 roomid : "+roomId.toString(), Toast.LENGTH_SHORT).show();
-    //                startGame(roomId);
                 }
             }
         });
@@ -65,16 +69,17 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String str = editTextEnterRoom.getText().toString();
-                if(str!= null){
-                    startGame(Integer.parseInt(str.toString()));
+                if(!str.equals("")){
+                    int roomid = Integer.parseInt(str);
+                    userState.setUserProperties(UserProperties.valueOf(roomid));
+                    startGame(roomid);
                 }
             }
         });
         btnSearchRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                roomConnector.requestRoomList();
-                List<RoomConfig> roomConfigList = roomConnector.getRoomCfgList();
+                List<RoomConfig> roomConfigList = roomConnector.getRoomList();
                 String str = "";
                 for(RoomConfig cfg : roomConfigList){
                     str = str+"방번호: "+cfg.getRoomID()+"\n";
@@ -85,19 +90,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void startGame(int roomId){
+    private void startGame(int roomId){
         boolean flag = enterRoom(roomId);
-        int id = userState.getId();
+
         if(flag){
             Intent intent = new Intent(this,GameClientActivity.class);
-            intent.putExtra("id",id);
-            intent.putExtra("roomid",userState.getConnectedRoomId());
-            intent.putExtra("userp",userState.getUserProperties());
+            intent.putExtra("userState",userState);
             intent.putExtra("uri", uri.toString());
             startActivity(intent);
         }
-
-           // gameClientActivity.start(roomId,id);
     }
 
     private boolean enterRoom(int roomId) {
@@ -111,13 +112,16 @@ public class MainActivity extends AppCompatActivity {
 
             if(UserProperties.isValidProperties(i)){
                 userState.setUserProperties(UserProperties.valueOf(i));
-                return roomConnector.enterRoom(roomId,i);
+                boolean result = true;
+                if(roomConnector.enterRoom(roomId,userState.getId(),UserProperties.valueOf(i))==null)
+                    result = false;
+                return result;
             }
             return false;
         }
     }
 
-    public static void alert(Context context, String ok_key_str, String msg) {
+    private static void alert(Context context, String ok_key_str, String msg) {
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setPositiveButton(ok_key_str, new DialogInterface.OnClickListener() {
             @Override

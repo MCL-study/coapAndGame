@@ -55,7 +55,7 @@ public abstract class GameClient{
         public void onLoad(CoapResponse response) {
             if (response.getCode() == ResponseCode.VALID) {
                 byte[] payload = response.getPayload();
-                LocationMessage locationMessage = new LocationMessage(payload, payload.length);
+                LocationMessage locationMessage = new LocationMessage(payload);
                 List<UserData> userDataList = locationMessage.getUserDataList();
                 updateAllLocation(userDataList);
             }
@@ -91,24 +91,23 @@ public abstract class GameClient{
         UserData userData = new UserData(player.getId(), player.getUserProperties(), location);
         LocationMessage locationMessage = new LocationMessage(roomId, 1, UserData.getSize());
         locationMessage.addUserDataStream(userData.getStream());
-        client.put(new HandlerSendResult(), locationMessage.getStream(), MsgType.USER_DATA);
-
+        client.put(new FinishNotifyLocationHandler(location), locationMessage.getStream(), MsgType.USER_DATA);
+        player.setLocData(location);
     }
-    private class HandlerSendResult implements CoapHandler{
-
+    private class FinishNotifyLocationHandler implements CoapHandler{
+        private  LocData location;
+        FinishNotifyLocationHandler(LocData location){
+            this.location =location;
+        }
         @Override
         public void onLoad(CoapResponse response) {
             if(response!=null){
                 if(response.getCode() == DELETED){
                     endGame();
                 }else if(response.getCode() == VALID){
-                    LocData location = gpsInfo.getLocData();
-                    UserData userData = new UserData(player.getId(), player.getUserProperties(), location);
-                    LocData locData = userData.getLocData();
-                    player.setLocData(locData);
                     double[] loc =new double[2];
-                    loc[0]= locData.getLat();
-                    loc[1]= locData.getLng();
+                    loc[0]= location.getLat();
+                    loc[1]= location.getLng();
                     finishNotifyLocation(loc);
                 }
             }
@@ -119,29 +118,6 @@ public abstract class GameClient{
 
         }
     }
-/*
-    class NotifyLocationTask extends TimerTask {
-        @Override
-        public void run() {
-            LocData location = gpsInfo.getLocData();
-            UserData userData = new UserData(player.getId(), player.getUserProperties(), location);
-            LocationMessage locationMessage = new LocationMessage(roomId, 1, UserData.getSize());
-            locationMessage.addUserDataStream(userData.getStream());
-            CoapResponse response = client.put(locationMessage.getStream(), MsgType.USER_DATA);
-            if(response!=null){
-                if(response.getCode() == DELETED){
-                    endGame();
-                }else if(response.getCode() == VALID){
-                    LocData locData = userData.getLocData();
-                    player.setLocData(locData);
-                    double[] loc =new double[2];
-                    loc[0]= locData.getLat();
-                    loc[1]= locData.getLng();
-                    finishNotifyLocation(loc);
-                }
-            }
-        }
-    }*/
 
     private void endGame() {
         //Toast.makeText(GameClientActivity.this, "잡혔습니다.", Toast.LENGTH_LONG);

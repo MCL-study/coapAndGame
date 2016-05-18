@@ -55,7 +55,7 @@ public class GameClient {
         public void onLoad(CoapResponse response) {
             if( response.getCode() == ResponseCode.VALID){
                 byte[] payload = response.getPayload();
-                LocationMessage locationMessage = new LocationMessage(payload, payload.length);
+                LocationMessage locationMessage = new LocationMessage(payload);
                 List<UserData> userDataList = locationMessage.getUserDataList();
                 updateAllLocation(userDataList);
                 for(UserData data : userDataList){

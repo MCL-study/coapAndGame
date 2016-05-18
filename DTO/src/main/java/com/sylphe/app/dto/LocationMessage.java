@@ -27,7 +27,8 @@ public class LocationMessage {
         converter.addStream(stream);
     }
 
-    public LocationMessage(byte[] stream, int msgSize){
+    public LocationMessage(byte[] stream){
+        int msgSize = stream.length;
         roomId = ByteBuffer.wrap(stream,0,4).order(ByteOrder.LITTLE_ENDIAN).getInt();
         byte[] bytes = new byte[msgSize-4];
         System.arraycopy(stream,4,bytes,0,msgSize-4);

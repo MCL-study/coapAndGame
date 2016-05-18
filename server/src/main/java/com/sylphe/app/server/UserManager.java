@@ -15,7 +15,7 @@ class UserManager {
     private int id;
     UserManager(){
         userList = new ArrayList<UserData>();
-        id=0;
+        id=1;
     }
 
     UserData createUser(){

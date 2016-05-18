@@ -20,7 +20,7 @@ public class RoomConnector {
         client = new CoapClient(uri+"/RoomManager");
     }
 
-    public int makeRoom(LocData centerLoc, int maxGameMember, int scale, int timeLimit){
+    public Integer makeRoom(LocData centerLoc, int maxGameMember, int scale, int timeLimit){
         RoomConfig config = new RoomConfig(centerLoc,maxGameMember,scale,timeLimit);
         CoapResponse response = client.put(config.getByteStream(), MsgType.MAKE_ROOM);
         if(response!=null){
@@ -32,7 +32,7 @@ public class RoomConnector {
         }else{
             System.out.println("방 만들기 실패");
         }
-        return -1;
+        return null;
     }
 
     public RoomConfig enterRoom(int roomId,int id,UserProperties userProperties){

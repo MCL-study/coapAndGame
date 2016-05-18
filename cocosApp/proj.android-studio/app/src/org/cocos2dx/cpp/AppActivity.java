@@ -86,8 +86,8 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static int login(){
-        accessClient.login();
-        return accessClient.getId();
+        int id = accessClient.login();
+        return id;
     }
 
     public static RoomConfig enterRoom(int roomId,int id,int userProperties){

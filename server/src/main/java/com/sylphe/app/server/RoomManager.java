@@ -17,7 +17,7 @@ class RoomManager {
     RoomManager(){
         roomList= new ArrayList<Room>();
         deleteUserList = new ArrayList<Integer>();
-        roomId=0;
+        roomId=1;
     }
     Room createRoom(RoomConfig config){
         Room room = new Room(roomId,config);

@@ -27,7 +27,7 @@ void MakeRoomPopup::okPopup()
 int MakeRoomPopup::makeRoom() {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
 	JniMethodInfo t;
-	jint roomid = -1;
+	jint roomid = NULL;
 	log("call make room");
 	if (JniHelper::getStaticMethodInfo(t
 		, "org/cocos2dx/cpp/AppActivity"
@@ -39,7 +39,7 @@ int MakeRoomPopup::makeRoom() {
 	log("call make room : return %d", roomid);
 	return roomid;
 #endif
-	return -1;
+	return NULL;
 }
 
 cocos2d::Scene * MakeRoomPopup::createScene()
