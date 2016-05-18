@@ -30,7 +30,7 @@ class Server extends CoapServer {
     private static final int COAP_PORT = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
 
     Server(RoomManager roomManager, UserManager userManager) throws SocketException {
-        add(new LoginManagerResource("LoginManager", userManager));
+        add(new AccessManagerResource("AccessManager", userManager));
         add(new RoomManagerResource("RoomManager", roomManager,userManager));
         add(new GameObserveResource("gameObserve", roomManager));
     }

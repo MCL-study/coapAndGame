@@ -9,14 +9,13 @@ import java.net.URI;
 /**
  * Created by myks7 on 2016-03-15.
  */
-public class Login {
+public class AccessClient {
     private int id=-1;
     private final CoapClient client;
-    private int connectedRoomId;
-    private UserProperties userProperties;
 
-    public Login(URI uri){
-        client = new CoapClient(uri+"/LoginManager");
+
+    public AccessClient(URI uri){
+        client = new CoapClient(uri+"/AccessManager");
     }
 
     public void login(){
@@ -29,21 +28,5 @@ public class Login {
 
     public int getId(){
         return id;
-    }
-
-    public int getConnectedRoomId() {
-        return connectedRoomId;
-    }
-
-    public void setConnectedRoomId(int connectedRoomId) {
-        this.connectedRoomId = connectedRoomId;
-    }
-
-    public UserProperties getUserProperties() {
-        return userProperties;
-    }
-
-    public void setUserProperties(UserProperties userProperties) {
-        this.userProperties = userProperties;
     }
 }

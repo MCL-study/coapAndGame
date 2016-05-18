@@ -26,13 +26,12 @@ package org.cocos2dx.cpp;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.cocos2dx.cpp.R;
 import com.shylphe.lib.android.client.GameClient;
 import com.shylphe.lib.android.client.GpsInfo;
-import com.shylphe.lib.android.client.Login;
+import com.shylphe.lib.android.client.AccessClient;
 import com.shylphe.lib.android.client.RoomConnector;
 import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserProperties;
@@ -49,7 +48,7 @@ public class AppActivity extends Cocos2dxActivity {
     private Cocos2dxGLSurfaceView mGLView;
     static public Handler handler;
     private static GpsInfo gpsInfo;
-    private static Login login;
+    private static AccessClient accessClient;
     private static RoomConnector roomConnector;
     private static GameClient gameClient;
 
@@ -75,7 +74,7 @@ public class AppActivity extends Cocos2dxActivity {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        login = new Login(uri);
+        accessClient = new AccessClient(uri);
         roomConnector = new RoomConnector(uri);
         gameClient = new CocosGameClient(uri,gpsInfo,mGLView);
 
@@ -87,8 +86,8 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static int login(){
-        login.login();
-        return login.getId();
+        accessClient.login();
+        return accessClient.getId();
     }
 
     public static RoomConfig enterRoom(int roomId,int id,int userProperties){

@@ -7,9 +7,9 @@ import org.eclipse.californium.core.server.resources.CoapExchange;
 /**
  * Created by myks7 on 2016-03-15.
  */
-class LoginManagerResource extends CoapResource {
+class AccessManagerResource extends CoapResource {
     private UserManager userManager;
-    LoginManagerResource(String name, UserManager userManager){
+    AccessManagerResource(String name, UserManager userManager){
         super(name);
         this.userManager = userManager;
     }
