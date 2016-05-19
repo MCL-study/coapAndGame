@@ -41,6 +41,8 @@ public class RoomConnector {
             if (response.getCode() == ResponseCode.VALID) {
                 System.out.println("접속 요청 완료");
                 return new RoomConfig(response.getPayload());
+            }else if(response.getCode() == ResponseCode.NOT_FOUND){
+                System.out.println("방 존재하지 않음");
             }
         }
         return null;
