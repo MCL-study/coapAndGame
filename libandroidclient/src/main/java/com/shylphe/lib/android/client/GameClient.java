@@ -20,36 +20,25 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
  */
 public abstract class GameClient{
     private GpsInfo gpsInfo;
-    private boolean aliveFlag;
     private CoapObserveRelation relation;
     private CoapClient client;
-    private Timer timer;
     private int roomId;
     private UserData player;
 
-
     public GameClient(URI uri, GpsInfo gpsInfo){
-        aliveFlag = false;
         client = new CoapClient(uri + "/gameObserve");
-
         this.gpsInfo = gpsInfo;
     }
 
     public void start(int roomId, int id,UserProperties userProperties) {
         this.roomId = roomId;
         player = new UserData(id,userProperties);
-        aliveFlag = true;
         relation = client.observe(new handler(), roomId);
     }
 
     public void close() {
-     //   relation.reactiveCancel();
+        relation.reactiveCancel();
         client.delete();
-        aliveFlag = false;
-    }
-
-    public boolean isAlive() {
-        return aliveFlag;
     }
 
     class handler implements CoapHandler {
@@ -116,15 +105,11 @@ public abstract class GameClient{
 
         @Override
         public void onError() {
-
         }
     }
 
     private void endGame() {
-        //Toast.makeText(GameClientActivity.this, "잡혔습니다.", Toast.LENGTH_LONG);
-        timer.cancel();
         relation.reactiveCancel();
-        aliveFlag =false;
     }
 
     protected abstract void finishNotifyLocation(double[] locData);

@@ -28,9 +28,11 @@ public class RoomConnector {
                 RoomConfig roomConfig = new RoomConfig(response.getPayload());
                 System.out.println("방 만들기 성공");
                 return roomConfig.getRoomID();
+            }else{
+                System.out.println("알 수 없는 이유 : 방 만들기 실패");
             }
         }else{
-            System.out.println("방 만들기 실패");
+            System.out.println("서버 무응답 : 방 만들기 실패");
         }
         return null;
     }
@@ -67,7 +69,7 @@ public class RoomConnector {
                 return null;
             }
         }else{
-            System.out.println("응답 없음");
+            System.out.println("서버 응답 없음");
             return null;
         }
     }
