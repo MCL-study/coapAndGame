@@ -45,13 +45,10 @@ public class MainActivity extends AppCompatActivity {
         initClient();
 
         initClickListener();
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         login();
     }
+
 
     private void initMemberObject() {
         editTextEnterRoom = (EditText) findViewById(R.id.editTextEnterRoom);
