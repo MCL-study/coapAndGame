@@ -71,6 +71,6 @@ dependencies {
     compile project(':libcocos2dx')
     compile 'org.eclipse.californium:californium-core:1.1.0-SNAPSHOT'
     compile project(':DTO')
-    compile project(':libandroidclient')
+    compile project(':AndroidClientLibrary')
 }
 

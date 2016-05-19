@@ -1,5 +1,5 @@
 rootProject.name = 'coapAndGame'
-include ':server', ':libandroidclient'
+include ':server', ':AndroidClientLibrary'
 include ':client'
 include ':DTO'
 include ':androidApp'
