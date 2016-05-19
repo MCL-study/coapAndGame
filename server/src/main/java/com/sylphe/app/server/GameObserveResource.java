@@ -62,7 +62,7 @@ class GameObserveResource extends CoapResource {
 
     @Override
     public void handleDELETE(CoapExchange exchange) {
-        delete(); // will also call clearAndNotifyObserveRelations(ResponseCode.NOT_FOUND)
+        //delete(); // will also call clearAndNotifyObserveRelations(ResponseCode.NOT_FOUND)
         exchange.respond(DELETED);
     }
 
