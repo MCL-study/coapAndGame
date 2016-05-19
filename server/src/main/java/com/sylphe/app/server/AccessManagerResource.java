@@ -2,6 +2,7 @@ package com.sylphe.app.server;
 
 import com.sylphe.app.dto.UserData;
 import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 /**
@@ -20,6 +21,6 @@ class AccessManagerResource extends CoapResource {
         UserData user =  userManager.createUser();
         Integer integer = user.getId();
         ServerMonitor.log("respond");
-        exchange.respond(integer.toString());
+        exchange.respond(CoAP.ResponseCode.VALID,integer.toString());
     }
 }
