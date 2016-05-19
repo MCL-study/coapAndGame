@@ -1,6 +1,5 @@
 package com.shylphe.lib.android.client;
 
-import com.sylphe.app.dto.UserProperties;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
 
@@ -26,6 +25,9 @@ public class AccessClient {
             return id;
         }
         return null;
+    }
+    public void close(){
+        client.delete();
     }
 
 }

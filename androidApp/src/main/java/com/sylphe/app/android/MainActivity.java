@@ -35,36 +35,53 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        initMemberObject();
         try {
             uri = new URI("coap://117.17.102.28");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        userState = new UserState();
 
+        initClient();
+
+        initClickListener();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        login();
+    }
+
+    private void initMemberObject() {
+        editTextEnterRoom = (EditText) findViewById(R.id.editTextEnterRoom);
         gpsInfo = new GpsInfo(this);
+        userState = new UserState();
+    }
+
+    private void initClient() {
+        roomConnector = new RoomConnector(uri);
         accessClient = new AccessClient(uri);
+    }
+
+    private void login() {
         int id = accessClient.login();
         userState.setId( id);
+        Toast.makeText(this,"login success id : "+id,Toast.LENGTH_SHORT).show();
+    }
 
-        roomConnector = new RoomConnector(uri);
-
+    private void initClickListener() {
         Button btnMakeRoom = (Button) findViewById(R.id.btnMakeRoom);
-        Button btnSearchRoom = (Button) findViewById(R.id.btnSearchRoom);
-        Button btnEnterRoom = (Button) findViewById(R.id.btnEnterroom);
-        editTextEnterRoom = (EditText) findViewById(R.id.editTextEnterRoom);
-
         btnMakeRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //멕시멈 멤버수 스케일 설정 해야함
                 Integer roomId = roomConnector.makeRoom(gpsInfo.getLocData(), 10, 600,9999);
                 if(roomId != null){
                     Toast.makeText(MainActivity.this, "성공 roomid : "+roomId.toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        Button btnEnterRoom =  (Button) findViewById(R.id.btnEnterroom);
         btnEnterRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,48 +93,51 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        Button btnSearchRoom = (Button) findViewById(R.id.btnSearchRoom);
         btnSearchRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<RoomConfig> roomConfigList = roomConnector.getRoomList();
-                String str = "";
-                for(RoomConfig cfg : roomConfigList){
-                    str = str+"방번호: "+cfg.getRoomID()+"\n";
+                if(roomConfigList!=null){
+                    String str = "";
+                    for(RoomConfig cfg : roomConfigList){
+                        str = str+"방번호: "+cfg.getRoomID()+"\n";
+                    }
+                    alert(MainActivity.this,"확인",str);
+                }else{
+                    Toast.makeText(MainActivity.this, "방 없음", Toast.LENGTH_SHORT).show();
                 }
-                alert(MainActivity.this,"확인",str);
             }
         });
     }
 
-
     private void startGame(int roomId){
-        boolean flag = enterRoom(roomId);
+        RoomConfig roomConfig = enterRoom(roomId);
 
-        if(flag){
+        if(roomConfig!=null){
+            LocalRoomConfig localRoomConfig = new LocalRoomConfig(roomConfig);
             Intent intent = new Intent(this,GameClientActivity.class);
             intent.putExtra("userState",userState);
+            intent.putExtra("localRoomConfig",localRoomConfig);
             intent.putExtra("uri", uri.toString());
             startActivity(intent);
         }
     }
 
-    private boolean enterRoom(int roomId) {
+    private RoomConfig enterRoom(int roomId) {
         EditText properties = (EditText) findViewById(R.id.editTextProperties);
         String text = properties.getText().toString();
         if(text.equals("")){
             Toast.makeText(this,"도망자 추척자중 선택 필요",Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }else{
             int i= Integer.parseInt(text);
 
             if(UserProperties.isValidProperties(i)){
                 userState.setUserProperties(UserProperties.valueOf(i));
-                boolean result = true;
-                if(roomConnector.enterRoom(roomId,userState.getId(),UserProperties.valueOf(i))==null)
-                    result = false;
-                return result;
+                return roomConnector.enterRoom(roomId,userState.getId(),UserProperties.valueOf(i));
             }
-            return false;
+            return null;
         }
     }
 
@@ -134,5 +154,17 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        gpsInfo.getLocation();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        gpsInfo.stopUsingGPS();
+        accessClient.close();
+        roomConnector.close();
+    }
 }

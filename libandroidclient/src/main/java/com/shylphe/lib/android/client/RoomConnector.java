@@ -25,8 +25,8 @@ public class RoomConnector {
         CoapResponse response = client.put(config.getByteStream(), MsgType.MAKE_ROOM);
         if(response!=null){
             if(response.getCode() == ResponseCode.VALID){
-                System.out.println("방 만들기 성공");
                 RoomConfig roomConfig = new RoomConfig(response.getPayload());
+                System.out.println("방 만들기 성공");
                 return roomConfig.getRoomID();
             }
         }else{
@@ -68,5 +68,8 @@ public class RoomConnector {
             System.out.println("응답 없음");
             return null;
         }
+    }
+    public void close(){
+        client.delete();
     }
 }

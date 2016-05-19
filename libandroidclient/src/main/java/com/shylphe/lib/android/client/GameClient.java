@@ -31,6 +31,7 @@ public abstract class GameClient{
     public GameClient(URI uri, GpsInfo gpsInfo){
         aliveFlag = false;
         client = new CoapClient(uri + "/gameObserve");
+
         this.gpsInfo = gpsInfo;
     }
 
@@ -42,8 +43,8 @@ public abstract class GameClient{
     }
 
     public void close() {
-//        timer.cancel();
-        relation.reactiveCancel();
+     //   relation.reactiveCancel();
+        client.delete();
         aliveFlag = false;
     }
 
@@ -91,12 +92,12 @@ public abstract class GameClient{
         UserData userData = new UserData(player.getId(), player.getUserProperties(), location);
         LocationMessage locationMessage = new LocationMessage(roomId, 1, UserData.getSize());
         locationMessage.addUserDataStream(userData.getStream());
-        client.put(new FinishNotifyLocationHandler(location), locationMessage.getStream(), MsgType.USER_DATA);
+        client.put(new NotifyLocationHandler(location), locationMessage.getStream(), MsgType.USER_DATA);
         player.setLocData(location);
     }
-    private class FinishNotifyLocationHandler implements CoapHandler{
+    private class NotifyLocationHandler implements CoapHandler{
         private  LocData location;
-        FinishNotifyLocationHandler(LocData location){
+        NotifyLocationHandler(LocData location){
             this.location =location;
         }
         @Override

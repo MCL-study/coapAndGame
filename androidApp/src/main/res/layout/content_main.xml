@@ -21,16 +21,19 @@
         android:layout_height="wrap_content">
 
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/editTextEnterRoom"
-            android:hint="방번호"
-            android:layout_weight="1" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextEnterRoom"
+                android:hint="방번호"
+                android:layout_weight="1"
+                android:inputType="numberDecimal"
+        />
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/editTextProperties"
             android:hint="2:도망자 3:추격자"
+            android:inputType="numberDecimal"
             android:layout_weight="1" />
         <Button
             android:layout_width="wrap_content"
