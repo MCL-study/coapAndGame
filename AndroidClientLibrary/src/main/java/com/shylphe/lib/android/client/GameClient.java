@@ -10,8 +10,8 @@ import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Timer;
 
+import static org.eclipse.californium.core.coap.CoAP.ResponseCode.CHANGED;
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.DELETED;
 import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
 
@@ -47,7 +47,7 @@ public abstract class GameClient{
                 byte[] payload = response.getPayload();
                 LocationMessage locationMessage = new LocationMessage(payload);
                 List<UserData> userDataList = locationMessage.getUserDataList();
-                updateAllLocation(userDataList);
+                updateAllUserData(userDataList);
             }
             notifyLocation();
         }
@@ -56,22 +56,20 @@ public abstract class GameClient{
         }
     }
 
-    private void updateAllLocation(List<UserData> userDataList) {
+    private void updateAllUserData(List<UserData> userDataList) {
         UserData[] userDatas = new UserData[userDataList.size()];
         for(int i=0; i<userDataList.size();i++){
             userDatas[i] = userDataList.get(i);
         }
-        finishUpdateAllLocation(userDatas);
+        finishUpdateAllUserData(userDatas);
     }
 
     public void catchFugitive(int fugitiveId){
-        Log.d("shylphe d", "catchFugitive: "+fugitiveId);
         CoapResponse response = client.put(roomId + "/" + fugitiveId, MsgType.CATCH_FUGITIVE);
         Log.d("shylphe d", "catchFugitive: end; code : "+(response==null? "error" :response.getCode()));
     }
 
     public void diePlayer(int playerId){
-        Log.d("shylphe d", "diePlayer: "+playerId);
         client.put(roomId + "/" + playerId, MsgType.DIE_PLAYER);
         Log.d("shylphe d", "diePlayer: end");
     }
@@ -113,5 +111,5 @@ public abstract class GameClient{
     }
 
     protected abstract void finishNotifyLocation(double[] locData);
-    protected abstract void finishUpdateAllLocation(UserData[] locData);
+    protected abstract void finishUpdateAllUserData(UserData[] locData);
 }
