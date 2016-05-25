@@ -80,7 +80,7 @@ void Login::onTouchEnded(cocos2d::Touch * touch, cocos2d::Event * event)
 {
 	int id = requestID();
 	UserDefault::getInstance()->setIntegerForKey("id", id);
-	if (id != -1) {
+	if (id != NULL) {
 		changeScene();
 	}
 	else {
@@ -108,5 +108,5 @@ int Login::requestID() {
 	log("RequestID Call : return %d", ret);
 	return ret;
 #endif
-	return -1;
+	return NULL;
 }

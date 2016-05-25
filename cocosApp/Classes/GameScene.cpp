@@ -85,8 +85,10 @@ void GameClient::addUserData(UserData* user)
 	bool exist = false;
 	for (auto i = userList.begin(); i != userList.end(); i++) {
 		if ((*i)->getId() == user->getId()) {
-			if((*i)->isAlive())
+			if ((*i)->isAlive()) {
 				(*i)->setLocData(user->getLocData());
+				(*i)->setUserProperties(user->getUserProperties());
+			}
 			exist = true;
 			break;
 		}
@@ -223,19 +225,16 @@ void GameClient::checkCollision()
 			LocData playerLocData = playerSprite->getLocData();
 			float distance =LocData::computeDistance(playerLocData.getLat(), playerLocData.getLng(), locData.getLat(), locData.getLng());
 			
-			//to do
+			//distance label
 			float dY = LocData::computeDistanceLat(playerLocData.getLat(), locData.getLat());
 			float dX = LocData::computeDistanceLng(playerLocData.getLng(), locData.getLng());
 			auto visibleSize = Director::getInstance()->getVisibleSize();
 			auto screenCenter = visibleSize / 2;
-
-
 			Vec2 pos(screenCenter.width + dX / 2 * pixelPerMeter,screenCenter.height + dY / 2 * pixelPerMeter);
 			//drawNode->drawDot(pos, 20, Color4F::BLACK);
 			String str;
 			str.appendWithFormat("%dm ", (int)distance);
 			(*i)->setDistanceLabel(pos, str._string);
-			
 			//this->addChild(distanceLabel, 1);
 
 			if (distance < 5) {
@@ -354,9 +353,9 @@ void Java_org_cocos2dx_cpp_CocosGameClient_finishNotifyLocationNative(JNIEnv* en
 #ifdef __cplusplus
 extern "C"
 #endif
-void Java_org_cocos2dx_cpp_CocosGameClient_finishUpdateAllLocationNative(JNIEnv* ent, jobject obj, jobjectArray userDatas) {
+void Java_org_cocos2dx_cpp_CocosGameClient_finishUpdateAllUserDataNative(JNIEnv* ent, jobject obj, jobjectArray userDatas) {
 	int id = UserDefault::getInstance()->getIntegerForKey("id");
-	log("call c finishUpdateAllLocation");
+	log("call c finishUpdateAllUserData");
 	int length = ent->GetArrayLength(userDatas);
 //	log("call c finishUpdateAllLocation length : %d", length);
 	UserDataJNIUtil* jniUtil = UserDataJNIUtil::getInstance();

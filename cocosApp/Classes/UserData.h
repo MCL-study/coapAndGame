@@ -6,7 +6,7 @@
 class UserData {
 protected:
 	const int id;
-	const int userProperties;
+	int userProperties;
 	LocData locData;
 public:
 	~UserData() {
@@ -34,7 +34,9 @@ public:
 	LocData getLocData() {
 		return locData;
 	}
-
+	void setUserProperties(int userProperties) {
+		this->userProperties = userProperties;
+	}
 	int getUserProperties() const {
 		return userProperties;
 	}

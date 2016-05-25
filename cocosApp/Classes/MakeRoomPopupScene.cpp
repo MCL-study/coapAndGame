@@ -15,8 +15,9 @@ void MakeRoomPopup::closePopup()
 void MakeRoomPopup::okPopup()
 {
 	int roomid = makeRoom();
-	if (roomid == -1) {
+	if (roomid == NULL) {
 		//방 만들기 실패
+		log("okpopup() makeRoom error");
 	}
 	else {
 		parrentLayer->refreshRoomCallback(NULL);
