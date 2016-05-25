@@ -4,37 +4,33 @@ import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserData;
 import com.sylphe.app.dto.UserProperties;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by myks7 on 2016-03-15.
  */
 class RoomManager {
     private List<Integer> deleteUserList;
-    private List<Room> roomList;
+    private Map<Integer,Room> roomMap;
     private int roomId;
+
     RoomManager(){
-        roomList= new ArrayList<Room>();
+        roomMap= new HashMap<Integer, Room>();
         deleteUserList = new ArrayList<Integer>();
         roomId=1;
     }
     Room createRoom(RoomConfig config){
         Room room = new Room(roomId,config);
         roomId++;
-        roomList.add(room);
+        roomMap.put(room.getRoomID(),room);
         ServerMonitor.log("게임공간 생성 됨 spaceID : "+room.getRoomId());
         return room;
     }
 
     Room searchRoom(int roomId){
-        for (Room room : roomList) {
-            if (room.getRoomId() == roomId)
-                return room;
-        }
-/*        com.sylphe.app.server.Room room = roomList.get(roomId);
-        if(room != null)
-            return room;*/
+        Room room = roomMap.get(roomId);
+        if (room != null)
+            return room;
         return null;
     }
 
@@ -48,29 +44,23 @@ class RoomManager {
     }
 
     List<Room> getRoomList(){
+        Set<Integer> keySet = roomMap.keySet();
         List<Room> rooms = new ArrayList<Room>();
-        rooms.addAll(roomList);
+        for(Integer roomId : keySet){
+            rooms.add(roomMap.get(roomId));
+        }
         return rooms;
     }
 
-    void updateUserData(int roomId, UserData userData) {
+    void updateUserLocation(int roomId, UserData userData) {
         Room room = searchRoom(roomId);
         if (room != null) {
-            room.searchUserAndUpdate(userData);
+            room.searchUserAndUpdateLoc(userData);
         }
     }
 
-    void deleteUser(int roomId, int userId){
+    void dieUser(int roomId, int userId){
         Room room = searchRoom(roomId);
-        room.deleteUser(userId);
-        deleteUserList.add(userId);
-    }
-
-    boolean existDeleteUser(int userId){
-        return deleteUserList.contains(userId);
-    }
-
-    void removeDeleteUser(Integer userId){
-        deleteUserList.remove(userId);
+        room.dieUser(userId);
     }
 }

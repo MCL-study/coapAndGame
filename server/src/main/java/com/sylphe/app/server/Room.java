@@ -3,6 +3,7 @@ package com.sylphe.app.server;
 import com.sylphe.app.dto.LocData;
 import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserData;
+import com.sylphe.app.dto.UserProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,7 @@ class Room {
         return null;
     }
 
-    void searchUserAndUpdate(UserData userData) {
+    void searchUserAndUpdateLoc(UserData userData) {
         UserData user = searchUser(userData.getId());
         if (user != null) {
             user.setLocData(userData.getLocData());
@@ -62,9 +63,10 @@ class Room {
         return userList;
     }
 
-    void deleteUser(int userId){
+    void dieUser(int userId){
         UserData userData = searchUser(userId);
-        userList.remove(userData);
+        assert userData==null:"missing user";
+        userData.setUserProperties(UserProperties.GHOST);
     }
 
     int getRoomID() {
