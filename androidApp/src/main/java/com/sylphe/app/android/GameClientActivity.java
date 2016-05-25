@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import android.widget.Toast;
 import com.shylphe.lib.android.client.GameClient;
 import com.shylphe.lib.android.client.GpsInfo;
 import com.sylphe.app.dto.*;
@@ -181,7 +182,7 @@ public class GameClientActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void finishUpdateAllLocation(UserData[] locData) {
+        protected void finishUpdateAllUserData(UserData[] locData) {
             userList = new ArrayList<>();
             Collections.addAll(userList, locData);
             checkCollision();
@@ -236,6 +237,8 @@ public class GameClientActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+
+        Toast.makeText(GameClientActivity.this, "GameClientActivity onStop", Toast.LENGTH_SHORT).show();
         super.onStop();
         client.close();
         finish();

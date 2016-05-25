@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initMemberObject();
         try {
-            uri = new URI("coap://117.17.102.28");
+            uri = new URI("coap://192.168.0.29");
+    //        uri = new URI("coap://117.17.102.28");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
