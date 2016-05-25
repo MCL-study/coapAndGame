@@ -35,18 +35,18 @@ class CocosGameClient  extends GameClient{
     }
 
     @Override
-    protected void finishUpdateAllLocation(UserData[] locData) {
+    protected void finishUpdateAllUserData(UserData[] locData) {
         locationDatas=locData;
         mGLView.queueEvent(new Runnable() {
             @Override
             public void run() {
-                finishUpdateAllLocationNative(locationDatas);
+                finishUpdateAllUserDataNative(locationDatas);
             }
         });
       //  finishUpdateAllLocationNative(locData);
     }
 
     private native void finishNotifyLocationNative(double[] locData);
-    private native void finishUpdateAllLocationNative(UserData[] locData);
+    private native void finishUpdateAllUserDataNative(UserData[] locData);
 
 }

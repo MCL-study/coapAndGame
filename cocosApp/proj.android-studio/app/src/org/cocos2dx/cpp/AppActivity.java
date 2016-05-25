@@ -69,8 +69,8 @@ public class AppActivity extends Cocos2dxActivity {
 
         URI uri=null;
         try {
-            uri = new URI("coap://117.17.102.28");
-      //      uri = new URI("coap://192.168.0.29");
+        //    uri = new URI("coap://117.17.102.28");
+            uri = new URI("coap://192.168.0.29");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -86,7 +86,9 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static int login(){
-        int id = accessClient.login();
+        Integer id = accessClient.login();
+        if(id == null)
+            return 0;
         return id;
     }
 
@@ -99,7 +101,9 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static int makeRoom(int maxGameMember,int scale, int timeLimit){
-        int roomId = roomConnector.makeRoom(gpsInfo.getLocData(), maxGameMember,scale, timeLimit);
+        Integer roomId = roomConnector.makeRoom(gpsInfo.getLocData(), maxGameMember,scale, timeLimit);
+        if(roomId == null)
+            return 0;
         return roomId;
     }
 
