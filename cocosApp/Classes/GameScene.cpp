@@ -34,7 +34,7 @@ bool GameClient::init()
 	auto listener = EventListenerTouchAllAtOnce::create();
 	listener->onTouchesBegan = CC_CALLBACK_2(GameClient::onTouchesBegan, this);
 	listener->onTouchesMoved = CC_CALLBACK_2(GameClient::onTouchesMoved, this);
-	dispatcher->addEventListenerWithFixedPriority(listener, 1);
+	dispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	
 	auto keyListener = EventListenerKeyboard::create();
 	keyListener->onKeyPressed = CC_CALLBACK_2(GameClient::onKeyPressed, this);
