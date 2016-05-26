@@ -23,16 +23,14 @@ THE SOFTWARE.
 ****************************************************************************/
 package org.cocos2dx.cpp;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import com.cocos2dx.cpp.R;
-import com.shylphe.lib.android.client.GameClient;
-import com.shylphe.lib.android.client.GpsInfo;
-import com.shylphe.lib.android.client.AccessClient;
-import com.shylphe.lib.android.client.RoomConnector;
+import com.shylphe.lib.android.client.*;
 import com.sylphe.app.dto.RoomConfig;
 import com.sylphe.app.dto.UserProperties;
 import org.cocos2dx.lib.Cocos2dxActivity;
@@ -56,6 +54,7 @@ public class AppActivity extends Cocos2dxActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        startService(new Intent(this, ListenerServerService.class));
         setContentView(R.layout.main);
         mGLView = (Cocos2dxGLSurfaceView) findViewById(R.id.game_gl_surfaceView);
         //** ScrollView rendering problem fix
@@ -77,7 +76,12 @@ public class AppActivity extends Cocos2dxActivity {
         accessClient = new AccessClient(uri);
         roomConnector = new RoomConnector(uri);
         gameClient = new CocosGameClient(uri,gpsInfo,mGLView);
+    }
 
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(this, ListenerServerService.class));
+        super.onDestroy();
     }
 
     public static double[] getLocation(){
@@ -121,6 +125,7 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static void startGame(int roomId, int id,int properties){
+
         gameClient.start(roomId,id,UserProperties.valueOf(properties));
     }
 
