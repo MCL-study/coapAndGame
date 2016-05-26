@@ -169,7 +169,6 @@ void GameClient::requestStartGame(int roomid, int id, int properties) {
 
 void GameClient::updatePosition()
 {
-	log("updatePosition call");
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	playerSprite->setPosition(visibleSize / 2);
 	auto playerLoc = playerSprite->getLocData();
@@ -188,7 +187,6 @@ void GameClient::updatePosition()
 
 void GameClient::drawRoomScale()
 {
-	log("drawRoomScale call");
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto screenCenter = visibleSize / 2;
 	auto playerLoc = playerSprite->getLocData();
@@ -257,7 +255,6 @@ void GameClient::checkCollision()
 
 void GameClient::drawBetweenDistance()
 {
-	log("drawBetweenDistance call");
 	for (auto i = userList.begin(); i != userList.end(); i++) {
 		if ((*i)->isAlive()) {
 			LocData locData = (*i)->getLocData();
@@ -281,7 +278,6 @@ void GameClient::drawBetweenDistance()
 
 void GameClient::onTouchesBegan(const std::vector<Touch*>& touches, Event * unused_event)
 {
-	log("onTouchesBegan call");
 	if (touches.size() == 2) {
 		beforeTouchLength = (touches.front()->getLocation() - touches.back()->getLocation()).length();
 		touchFlag = true;
@@ -290,7 +286,6 @@ void GameClient::onTouchesBegan(const std::vector<Touch*>& touches, Event * unus
 
 void GameClient::onTouchesMoved(const std::vector<Touch*>& touches, Event * unused_event)
 {
-	log("onTouchesMoved call");
 	if (touches.size() == 2) {
 		if (!touchFlag) {
 			beforeTouchLength = (touches.front()->getLocation() - touches.back()->getLocation()).length();
@@ -308,7 +303,6 @@ void GameClient::onTouchesMoved(const std::vector<Touch*>& touches, Event * unus
 
 void GameClient::onTouchesEnded(const std::vector<Touch*>& touches, Event * unused_event)
 {
-	log("onTouchesEnded call");
 	touchFlag = false;
 }
 
