@@ -6,7 +6,9 @@ import com.sylphe.app.dto.UserData;
 import com.sylphe.app.dto.UserProperties;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by myks7 on 2016-03-14.
@@ -17,11 +19,14 @@ class Room {
 //    private int currentChaserNum, currentFugitiveNum;
     private LocData centerLoc;
     private int scale;
-    private List<UserData> userList;
+ //   private List<UserData> userList;
+    private Map<Integer,UserData> userMap;
+
     private int timeLimit;
 
     Room(int roomId, RoomConfig config){
-        userList = new ArrayList<UserData>();
+      //  userList = new ArrayList<UserData>();
+        userMap = new HashMap<Integer, UserData>(10);//maxGameMember로 변경할 것
         this.roomId = roomId;
         maxGameMember = config.getMaxGameMember();
         scale = config.getScale();
@@ -38,16 +43,19 @@ class Room {
     }
 
     void addUser(UserData user){
-        userList.add(user);
+     //   userList.add(user);
+        userMap.put(user.getId(),user);
     }
 
     private UserData searchUser(int userId){
-        for(UserData userData : userList){
+/*        for(UserData userData : userList){
             if(userData.getId() == userId){
                 return userData;
             }
         }
         return null;
+        */
+        return userMap.get(userId);
     }
 
     void searchUserAndUpdateLoc(UserData userData) {
@@ -60,13 +68,29 @@ class Room {
     }
 
     List<UserData> getUserList() {
-        return userList;
+        return new ArrayList<UserData>(userMap.values());
     }
 
     void dieUser(int userId){
         UserData userData = searchUser(userId);
         assert userData==null:"missing user";
         userData.setUserProperties(UserProperties.GHOST);
+    }
+    void exitUser(int userId){
+/*        UserData user=null;
+        for(UserData userData : userList){
+            if(userData.getId() == userId){
+                userData.setUserProperties(UserProperties.NOT_DEFINE);
+                user=userData;
+                break;
+            }
+        }
+        userList.remove(user);*/
+        UserData user = searchUser(userId);
+        if(user!=null){
+            user.setUserProperties(UserProperties.NOT_DEFINE);
+            userMap.remove(user.getId());
+        }
     }
 
     int getRoomID() {

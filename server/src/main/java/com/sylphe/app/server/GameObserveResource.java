@@ -94,6 +94,14 @@ class GameObserveResource extends CoapResource {
             ServerMonitor.log(roomId+"번 게임공간 DIE_PLAYER 메세지 받음 id:"+playerId+"죽음");
             roomManager.dieUser(roomId,playerId);
             exchange.respond(DELETED);
+        }else if(contentFormat == MsgType.EXIT_USER){
+            String requestText = exchange.getRequestText();
+            String[] split = requestText.split("/");
+            int roomId = Integer.parseInt(split[0]);
+            Integer playerId = Integer.parseInt(split[1]);
+            ServerMonitor.log(roomId+"번 게임공간 EXIT_USER 메세지 받음 id:"+playerId+" 나감");
+            roomManager.exitUser(roomId,playerId);
+            exchange.respond(DELETED);
         }
  //       exchange.respond(NOT_IMPLEMENTED);
 //      changed(); // notify all observers

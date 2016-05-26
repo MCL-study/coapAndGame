@@ -10,13 +10,13 @@ import java.util.*;
  * Created by myks7 on 2016-03-15.
  */
 class RoomManager {
-    private List<Integer> deleteUserList;
+//    private List<Integer> deleteUserList;
     private Map<Integer,Room> roomMap;
     private int roomId;
 
     RoomManager(){
         roomMap= new HashMap<Integer, Room>();
-        deleteUserList = new ArrayList<Integer>();
+ //       deleteUserList = new ArrayList<Integer>();
         roomId=1;
     }
     Room createRoom(RoomConfig config){
@@ -44,12 +44,7 @@ class RoomManager {
     }
 
     List<Room> getRoomList(){
-        Set<Integer> keySet = roomMap.keySet();
-        List<Room> rooms = new ArrayList<Room>();
-        for(Integer roomId : keySet){
-            rooms.add(roomMap.get(roomId));
-        }
-        return rooms;
+        return new ArrayList<Room>(roomMap.values());
     }
 
     void updateUserLocation(int roomId, UserData userData) {
@@ -62,5 +57,9 @@ class RoomManager {
     void dieUser(int roomId, int userId){
         Room room = searchRoom(roomId);
         room.dieUser(userId);
+    }
+    void exitUser(int roomId, int userId){
+        Room room = searchRoom(roomId);
+        room.exitUser(userId);
     }
 }
