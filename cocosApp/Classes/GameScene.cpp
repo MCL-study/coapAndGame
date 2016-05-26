@@ -357,12 +357,10 @@ void Java_org_cocos2dx_cpp_CocosGameClient_finishUpdateAllUserDataNative(JNIEnv*
 	int id = UserDefault::getInstance()->getIntegerForKey("id");
 	log("call c finishUpdateAllUserData");
 	int length = ent->GetArrayLength(userDatas);
-//	log("call c finishUpdateAllLocation length : %d", length);
 	UserDataJNIUtil* jniUtil = UserDataJNIUtil::getInstance();
 	for (int i = 0; i < length; i++) {
 		jobject data = ent->GetObjectArrayElement(userDatas, i);
 		UserData* userData = jniUtil->getUserData(data);
-	//	log("%lf %lf", userData->getLocData().getLat(), userData->getLocData().getLng());
 		if(userData->getId() != id)
 			if (gameClient != NULL)
 				gameClient->addUserData(userData);
