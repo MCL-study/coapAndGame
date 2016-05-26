@@ -40,6 +40,7 @@ public abstract class GameClient{
 
     public void close() {
         aliveFlag=false;
+        client.put(roomId + "/" + player.getId(), MsgType.EXIT_USER);
         relation.reactiveCancel();
     }
 
