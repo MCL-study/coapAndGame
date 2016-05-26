@@ -4,14 +4,15 @@ import com.sylphe.app.dto.UserData;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
 /**
  * Created by myks7 on 2016-03-15.
  */
-class AccessManagerResource extends CoapResource {
+class AccessManagerResource extends ConcurrentCoapResource {
     private UserManager userManager;
     AccessManagerResource(String name, UserManager userManager){
-        super(name);
+        super(name,SINGLE_THREADED);
         this.userManager = userManager;
     }
 

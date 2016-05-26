@@ -3,9 +3,14 @@ package com.sylphe.app.server;
 import com.sylphe.app.dto.LocationMessage;
 import com.sylphe.app.dto.MsgType;
 import com.sylphe.app.dto.UserData;
+import org.eclipse.californium.core.CoapClient;
+import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP;
+import org.eclipse.californium.core.coap.Response;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
 import java.util.List;
 import java.util.Timer;
@@ -17,11 +22,11 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
 /**
  * Created by myks7 on 2016-03-14.
  */
-class GameObserveResource extends CoapResource {
+class GameObserveResource extends ConcurrentCoapResource {
     private RoomManager roomManager;
 
     GameObserveResource(String name, RoomManager roomManager) {
-        super(name);
+        super(name,SINGLE_THREADED);
         this.roomManager = roomManager;
         setObservable(true); // enable observing
         setObserveType(CoAP.Type.CON); // configure the notification type to CONs
@@ -43,7 +48,7 @@ class GameObserveResource extends CoapResource {
 
     @Override
     public void handleGET(CoapExchange exchange) {
-          exchange.setMaxAge(1); // the Max-Age value should match the update interval
+        exchange.setMaxAge(1); // the Max-Age value should match the update interval
       //  exchange.respond("update "+getName() +"  "+exchange.getRequestOptions().getAccept());
         int roomId = exchange.getRequestOptions().getAccept();
         Room room = roomManager.searchRoom(roomId);
@@ -57,6 +62,19 @@ class GameObserveResource extends CoapResource {
             exchange.respond(VALID,locationMessage.getStream());
         }
         //exchange.respond(NOT_IMPLEMENTED);
+/*        System.out.println("coap:/"+exchange.getSourceAddress()+":"+exchange.getSourcePort()+"/listener");
+        CoapClient client = new CoapClient("coap:/"+exchange.getSourceAddress()+":"+5683+"/listener");
+        client.get(new CoapHandler() {
+            public void onLoad(CoapResponse response) {
+                System.out.println("aaa");
+                System.out.println(response.getResponseText());
+
+            }
+
+            public void onError() {
+
+            }
+        });*/
     }
 
     @Override

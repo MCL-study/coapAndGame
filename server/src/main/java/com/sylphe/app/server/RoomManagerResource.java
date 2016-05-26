@@ -4,17 +4,18 @@ import com.sylphe.app.dto.*;
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
+import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
 import java.util.List;
 
 /**
  * Created by myks7 on 2016-03-15.
  */
-class RoomManagerResource extends CoapResource {
+class RoomManagerResource extends ConcurrentCoapResource {
     private RoomManager roomManager;
     private UserManager userManager;
     RoomManagerResource(String name, RoomManager roomManager, UserManager userManager){
-        super(name);
+        super(name,SINGLE_THREADED);
         this.roomManager = roomManager;
         this.userManager =userManager;
     }
