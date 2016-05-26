@@ -24,6 +24,7 @@ public abstract class GameClient{
     private CoapClient client;
     private int roomId;
     private UserData player;
+    private boolean aliveFlag;
 
     public GameClient(URI uri, GpsInfo gpsInfo){
         client = new CoapClient(uri + "/gameObserve");
@@ -31,25 +32,28 @@ public abstract class GameClient{
     }
 
     public void start(int roomId, int id,UserProperties userProperties) {
+        aliveFlag=true;
         this.roomId = roomId;
         player = new UserData(id,userProperties);
         relation = client.observe(new handler(), roomId);
     }
 
     public void close() {
+        aliveFlag=false;
         relation.reactiveCancel();
-        client.delete();
     }
 
     class handler implements CoapHandler {
         public void onLoad(CoapResponse response) {
-            if (response.getCode() == ResponseCode.VALID) {
-                byte[] payload = response.getPayload();
-                LocationMessage locationMessage = new LocationMessage(payload);
-                List<UserData> userDataList = locationMessage.getUserDataList();
-                updateAllUserData(userDataList);
+            if(aliveFlag) {
+                if (response.getCode() == ResponseCode.VALID) {
+                    byte[] payload = response.getPayload();
+                    LocationMessage locationMessage = new LocationMessage(payload);
+                    List<UserData> userDataList = locationMessage.getUserDataList();
+                    updateAllUserData(userDataList);
+                }
+                notifyLocation();
             }
-            notifyLocation();
         }
         public void onError() {
             System.err.println("-Failed--------");
@@ -64,14 +68,18 @@ public abstract class GameClient{
         finishUpdateAllUserData(userDatas);
     }
 
-    public void catchFugitive(int fugitiveId){
-        CoapResponse response = client.put(roomId + "/" + fugitiveId, MsgType.CATCH_FUGITIVE);
-        Log.d("shylphe d", "catchFugitive: end; code : "+(response==null? "error" :response.getCode()));
+    public void catchFugitive(int fugitiveId) {
+        if (aliveFlag) {
+            CoapResponse response = client.put(roomId + "/" + fugitiveId, MsgType.CATCH_FUGITIVE);
+            Log.d("shylphe d", "catchFugitive: end; code : " + (response == null ? "error" : response.getCode()));
+        }
     }
 
-    public void diePlayer(int playerId){
-        client.put(roomId + "/" + playerId, MsgType.DIE_PLAYER);
-        Log.d("shylphe d", "diePlayer: end");
+    public void diePlayer(int playerId) {
+        if (aliveFlag) {
+            client.put(roomId + "/" + playerId, MsgType.DIE_PLAYER);
+            Log.d("shylphe d", "diePlayer: end");
+        }
     }
 
     private void notifyLocation(){
@@ -90,9 +98,7 @@ public abstract class GameClient{
         @Override
         public void onLoad(CoapResponse response) {
             if(response!=null){
-                if(response.getCode() == DELETED){
-                    endGame();
-                }else if(response.getCode() == VALID){
+                if(response.getCode() == VALID){
                     double[] loc =new double[2];
                     loc[0]= location.getLat();
                     loc[1]= location.getLng();
@@ -104,10 +110,6 @@ public abstract class GameClient{
         @Override
         public void onError() {
         }
-    }
-
-    private void endGame() {
-        relation.reactiveCancel();
     }
 
     protected abstract void finishNotifyLocation(double[] locData);
