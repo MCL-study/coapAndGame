@@ -30,8 +30,6 @@ class CocosGameClient  extends GameClient{
                 finishNotifyLocationNative(locationData);
             }
         });
-
-    //    finishNotifyLocationNative(locData);
     }
 
     @Override
@@ -43,7 +41,6 @@ class CocosGameClient  extends GameClient{
                 finishUpdateAllUserDataNative(locationDatas);
             }
         });
-      //  finishUpdateAllLocationNative(locData);
     }
 
     private native void finishNotifyLocationNative(double[] locData);

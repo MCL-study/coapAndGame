@@ -24,6 +24,7 @@ private:
 	void endTimer();
 	void onTimer(float dt);
 
+
 	cocos2d::Texture2D* redPlayer;
 	cocos2d::Texture2D* red;
 	cocos2d::Texture2D* greenPlayer;
@@ -40,8 +41,10 @@ private:
 	virtual void onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event *unused_event);
 	float beforeTouchLength;
 	bool touchFlag=false;
+	bool aliveFlag = false;
 
 	void checkCollision();
+	void drawBetweenDistance();
 	void diePlayer(int playerId);
 	void catchFugitive(int fugitiveId);
 
@@ -55,7 +58,8 @@ private:
 public:
 	CREATE_FUNC(GameClient);
 	~GameClient();
-	
+	virtual void update(float delta);
+
 	void addUserData(UserData* user);
 	void setPlayerLoc(LocData loc);
 };

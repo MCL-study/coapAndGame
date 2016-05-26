@@ -125,14 +125,17 @@ public class AppActivity extends Cocos2dxActivity {
     }
 
     public static void catchFugitive(int fugitiveId){
+        Log.d("appAcrivity","call catchFugitive");
         gameClient.catchFugitive(fugitiveId);
     }
 
     public static void diePlayer(int playerId){
+        Log.d("appAcrivity","call diePlayer");
         gameClient.diePlayer(playerId);
     }
 
     public static void closeGameClient(){
+        Log.d("appAcrivity","call closeGameClient");
         gameClient.close();
     }
 }

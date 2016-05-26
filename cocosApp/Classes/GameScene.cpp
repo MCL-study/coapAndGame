@@ -43,7 +43,8 @@ bool GameClient::init()
 	drawNode = DrawNode::create();
 	drawNode->setPosition(Vec2::ZERO);
 	addChild(drawNode, 1);
-
+	aliveFlag = true;
+	this->scheduleUpdate();
 	return true;
 }
 
@@ -66,16 +67,23 @@ void GameClient::replaceHallScene()
 GameClient::~GameClient()
 {
 	cocos2d::log("~gameClient");
+	this->unscheduleUpdate();
 	endTimer();
 	gameClient = NULL;
 	close();
 }
 
+void GameClient::update(float delta)
+{
+	Layer::update(delta);
+	updatePosition();
+	drawRoomScale();
+	drawBetweenDistance();
+}
+
 void GameClient::setPlayerLoc(LocData loc)
 {
 	playerSprite->setLocData(loc);
-	updatePosition();
-	drawRoomScale();
 	checkCollision();
 }
 
@@ -102,11 +110,13 @@ void GameClient::addUserData(UserData* user)
 			auto tempSprite = Sprite::createWithTexture(green);
 			sprite->setSprite(tempSprite);
 		}
+		else if (user->getUserProperties() == UserProperties::GHOST) {
+			auto tempSprite = Sprite::createWithTexture(dead);
+			sprite->setSprite(tempSprite);
+		}
 		sprite->addChild(this, 2);
 		userList.push_back(sprite);
 	}
-	updatePosition();
-	drawRoomScale();
 	checkCollision();
 }
 
@@ -165,20 +175,12 @@ void GameClient::updatePosition()
 	auto playerLoc = playerSprite->getLocData();
 	auto screenCenter = visibleSize / 2;
 
-	log("updatePosition p %f %f", playerLoc.getLat(), playerLoc.getLng());
 	for (auto i = userList.begin(); i != userList.end(); i++) {
 		if (playerSprite->getId() != (*i)->getId()) {
 			LocData locData = (*i)->getLocData();
-//			LocData diff = locData - playerLoc;
-//			int resultX = (int)(center.width + diff.getLat() / scalePerPixel);
-//			int resultY = (int)(center.height + diff.getLng() / scalePerPixel);
-//			(*i)->setPosition(Vec2(resultX, resultY));/
-			log("updatePosition u %f %f", locData.getLat(), locData.getLng());
 			float dY = LocData::computeDistanceLat(playerLoc.getLat(), locData.getLat());
 			float dX = LocData::computeDistanceLng(playerLoc.getLng(), locData.getLng());
 			(*i)->setPosition(Vec2(screenCenter.width + dX*pixelPerMeter, screenCenter.height + dY*pixelPerMeter));
-			log("updatePosition %f %f %f", dX, dY, pixelPerMeter);
-			log("%f", LocData::computeDistance(playerLoc.getLat(), playerLoc.getLng(), locData.getLat(), locData.getLng()));
 		}
 	}
 	
@@ -186,6 +188,7 @@ void GameClient::updatePosition()
 
 void GameClient::drawRoomScale()
 {
+	log("drawRoomScale call");
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto screenCenter = visibleSize / 2;
 	auto playerLoc = playerSprite->getLocData();
@@ -224,18 +227,6 @@ void GameClient::checkCollision()
 			LocData locData = (*i)->getLocData();
 			LocData playerLocData = playerSprite->getLocData();
 			float distance =LocData::computeDistance(playerLocData.getLat(), playerLocData.getLng(), locData.getLat(), locData.getLng());
-			
-			//distance label
-			float dY = LocData::computeDistanceLat(playerLocData.getLat(), locData.getLat());
-			float dX = LocData::computeDistanceLng(playerLocData.getLng(), locData.getLng());
-			auto visibleSize = Director::getInstance()->getVisibleSize();
-			auto screenCenter = visibleSize / 2;
-			Vec2 pos(screenCenter.width + dX / 2 * pixelPerMeter,screenCenter.height + dY / 2 * pixelPerMeter);
-			//drawNode->drawDot(pos, 20, Color4F::BLACK);
-			String str;
-			str.appendWithFormat("%dm ", (int)distance);
-			(*i)->setDistanceLabel(pos, str._string);
-			//this->addChild(distanceLabel, 1);
 
 			if (distance < 5) {
 				if (playerSprite->getUserProperties() == UserProperties::CHASER) {
@@ -264,8 +255,33 @@ void GameClient::checkCollision()
 	}
 }
 
+void GameClient::drawBetweenDistance()
+{
+	log("drawBetweenDistance call");
+	for (auto i = userList.begin(); i != userList.end(); i++) {
+		if ((*i)->isAlive()) {
+			LocData locData = (*i)->getLocData();
+			LocData playerLocData = playerSprite->getLocData();
+			float distance = LocData::computeDistance(playerLocData.getLat(), playerLocData.getLng(), locData.getLat(), locData.getLng());
+
+			//distance label
+			float dY = LocData::computeDistanceLat(playerLocData.getLat(), locData.getLat());
+			float dX = LocData::computeDistanceLng(playerLocData.getLng(), locData.getLng());
+			auto visibleSize = Director::getInstance()->getVisibleSize();
+			auto screenCenter = visibleSize / 2;
+			Vec2 pos(screenCenter.width + dX / 2 * pixelPerMeter, screenCenter.height + dY / 2 * pixelPerMeter);
+			//drawNode->drawDot(pos, 20, Color4F::BLACK);
+			String str;
+			str.appendWithFormat("%dm ", (int)distance);
+			(*i)->setDistanceLabel(pos, str._string);
+			//this->addChild(distanceLabel, 1);
+		}
+	}
+}
+
 void GameClient::onTouchesBegan(const std::vector<Touch*>& touches, Event * unused_event)
 {
+	log("onTouchesBegan call");
 	if (touches.size() == 2) {
 		beforeTouchLength = (touches.front()->getLocation() - touches.back()->getLocation()).length();
 		touchFlag = true;
@@ -274,6 +290,7 @@ void GameClient::onTouchesBegan(const std::vector<Touch*>& touches, Event * unus
 
 void GameClient::onTouchesMoved(const std::vector<Touch*>& touches, Event * unused_event)
 {
+	log("onTouchesMoved call");
 	if (touches.size() == 2) {
 		if (!touchFlag) {
 			beforeTouchLength = (touches.front()->getLocation() - touches.back()->getLocation()).length();
@@ -286,13 +303,12 @@ void GameClient::onTouchesMoved(const std::vector<Touch*>& touches, Event * unus
 				pixelPerMeter *= 1.01f;
 			beforeTouchLength = currentTouchLength;
 		}
-		updatePosition();
-		drawRoomScale();
 	}
 }
 
 void GameClient::onTouchesEnded(const std::vector<Touch*>& touches, Event * unused_event)
 {
+	log("onTouchesEnded call");
 	touchFlag = false;
 }
 
@@ -301,20 +317,24 @@ void GameClient::onTouchesEnded(const std::vector<Touch*>& touches, Event * unus
 #endif
 void GameClient::diePlayer(int playerId)
 {
+	if (aliveFlag) {
+		aliveFlag = false;
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
-	JniMethodInfo t;
-	log("diePlayer Call");
-	if (JniHelper::getStaticMethodInfo(t, "org/cocos2dx/cpp/AppActivity", "diePlayer", "(I)V")) {
-		t.env->CallStaticVoidMethod(t.classID, t.methodID,playerId);
-	}
+		JniMethodInfo t;
+		log("diePlayer Call");
+		if (JniHelper::getStaticMethodInfo(t, "org/cocos2dx/cpp/AppActivity", "diePlayer", "(I)V")) {
+			t.env->CallStaticVoidMethod(t.classID, t.methodID, playerId);
+		}
 #endif
-	endTimer();
-	close();
-	replaceHallScene();
+		endTimer();
+		close();
+		replaceHallScene();
+	}
 }
 
 void GameClient::close()
 {
+	aliveFlag = false;
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
 	JniMethodInfo t;
 	log("close Call");
@@ -326,13 +346,15 @@ void GameClient::close()
 
 void GameClient::catchFugitive(int fugitiveId)
 {
+	if (aliveFlag) {
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
-	JniMethodInfo t;
-	log("catchFugitive Call");
-	if (JniHelper::getStaticMethodInfo(t, "org/cocos2dx/cpp/AppActivity", "catchFugitive", "(I)V")) {
-		t.env->CallStaticVoidMethod(t.classID, t.methodID, fugitiveId);
-	}
+		JniMethodInfo t;
+		log("catchFugitive Call");
+		if (JniHelper::getStaticMethodInfo(t, "org/cocos2dx/cpp/AppActivity", "catchFugitive", "(I)V")) {
+			t.env->CallStaticVoidMethod(t.classID, t.methodID, fugitiveId);
+		}
 #endif
+	}
 }
 
 #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
@@ -343,29 +365,32 @@ void GameClient::catchFugitive(int fugitiveId)
 extern "C"
 #endif
 void Java_org_cocos2dx_cpp_CocosGameClient_finishNotifyLocationNative(JNIEnv* ent, jobject obj, jdoubleArray arr) {
-	log("call c finishNotifyLocation");
-	jboolean bol = JNI_TRUE;
-	double* loc = (double*)ent->GetDoubleArrayElements(arr, &bol);
-	if(gameClient != NULL)
+	if (gameClient != NULL) {
+		log("call c finishNotifyLocation");
+		jboolean bol = JNI_TRUE;
+		double* loc = (double*)ent->GetDoubleArrayElements(arr, &bol);
 		gameClient->setPlayerLoc(LocData(loc[0], loc[1]));
+	}
 }
 
 #ifdef __cplusplus
 extern "C"
 #endif
 void Java_org_cocos2dx_cpp_CocosGameClient_finishUpdateAllUserDataNative(JNIEnv* ent, jobject obj, jobjectArray userDatas) {
-	int id = UserDefault::getInstance()->getIntegerForKey("id");
-	log("call c finishUpdateAllUserData");
-	int length = ent->GetArrayLength(userDatas);
-	UserDataJNIUtil* jniUtil = UserDataJNIUtil::getInstance();
-	for (int i = 0; i < length; i++) {
-		jobject data = ent->GetObjectArrayElement(userDatas, i);
-		UserData* userData = jniUtil->getUserData(data);
-		if(userData->getId() != id)
-			if (gameClient != NULL)
+	if (gameClient != NULL) {
+		int id = UserDefault::getInstance()->getIntegerForKey("id");
+		log("call c finishUpdateAllUserData");
+		int length = ent->GetArrayLength(userDatas);
+		UserDataJNIUtil* jniUtil = UserDataJNIUtil::getInstance();
+		for (int i = 0; i < length; i++) {
+			jobject data = ent->GetObjectArrayElement(userDatas, i);
+			UserData* userData = jniUtil->getUserData(data);
+			if (userData->getId() != id)
 				gameClient->addUserData(userData);
-	}	
+		}
+	}
 }
+
 #endif
 
 #include "RoomConfigJNIUtil.h"
