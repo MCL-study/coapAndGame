@@ -20,13 +20,13 @@ class Room {
     private LocData centerLoc;
     private int scale;
  //   private List<UserData> userList;
-    private Map<Integer,UserData> userMap;
+    private Map<Integer,User> userMap;
 
     private int timeLimit;
 
     Room(int roomId, RoomConfig config){
       //  userList = new ArrayList<UserData>();
-        userMap = new HashMap<Integer, UserData>(10);//maxGameMember로 변경할 것
+        userMap = new HashMap<Integer, User>(10);//maxGameMember로 변경할 것
         this.roomId = roomId;
         maxGameMember = config.getMaxGameMember();
         scale = config.getScale();
@@ -42,7 +42,7 @@ class Room {
         return new RoomConfig(roomId,centerLoc,maxGameMember,scale,timeLimit);
     }
 
-    void addUser(UserData user){
+    void addUser(User user){
      //   userList.add(user);
         userMap.put(user.getId(),user);
     }

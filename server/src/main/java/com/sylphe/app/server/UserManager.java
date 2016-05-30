@@ -3,6 +3,7 @@ package com.sylphe.app.server;
 import com.sylphe.app.dto.UserData;
 import com.sylphe.app.dto.UserProperties;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,43 +12,41 @@ import java.util.List;
  */
 class UserManager {
 
-    private List<UserData> userList;
+    private List<User> userList;
     private int id;
     UserManager(){
-        userList = new ArrayList<UserData>();
+        userList = new ArrayList<User>();
         id=1;
     }
 
-    UserData createUser(){
+    UserData createUser(InetAddress sourceAddress, int sourcePort){
         ServerMonitor.log("사용자 생성 id:"+id);
-        UserData user = new UserData(id, UserProperties.NOT_DEFINE);
+        //UserData user = new UserData(id, UserProperties.NOT_DEFINE);
+        User user = new User(sourceAddress,sourcePort,id, UserProperties.NOT_DEFINE);
         id++;
-        addUser(user);
+        userList.add(user);
         return user;
     }
 
-    private UserData searchUser(int id){
-        for(UserData userData : userList){
-            if(userData.getId() == id){
-                return userData;
+    private User searchUser(int id){
+        for(User user : userList){
+            if(user.getId() == id){
+                return user;
             }
         }
         return null;
     }
 
-    private void addUser(UserData user){
-        userList.add(user);
-    }
 
-    UserData updateUserUserProperties(int id, UserProperties userProperties){
-        UserData user = searchUser(id);
+    User updateUserUserProperties(int id, UserProperties userProperties){
+        User user = searchUser(id);
         assert(user==null):"assert updateUserUserProperties use==null";
         ServerMonitor.log("update UserProperties");
         user.setUserProperties(userProperties);
         return user;
     }
-    public List<UserData> getUserList(){
-        ArrayList<UserData> result = new ArrayList<UserData>();
+    List<User> getUserList(){
+        ArrayList<User> result = new ArrayList<User>();
         result.addAll(userList);
         return result;
     }

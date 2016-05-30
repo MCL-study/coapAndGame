@@ -34,10 +34,10 @@ class RoomManager {
         return null;
     }
 
-    Room enterRoom(int roomId, UserData userData){
+    Room enterRoom(int roomId, User user){
         Room room = searchRoom(roomId);
         if (room != null) {
-            room.addUser(userData);
+            room.addUser(user);
             return room;
         }
         return null;

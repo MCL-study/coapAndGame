@@ -56,7 +56,7 @@ class ServerMonitor {
         }
     }
     private void showLoginUser(){
-        List<UserData> userList = userManager.getUserList();
+        List<User> userList = userManager.getUserList();
         System.out.println("접속한 사용자 수 : "+userList.size());
         for(UserData user : userList){
             System.out.println("id : "+user.getId()+" ");

@@ -19,7 +19,7 @@ class AccessManagerResource extends ConcurrentCoapResource {
     @Override
     public void handleGET(CoapExchange exchange) {
         ServerMonitor.log("로그인 요청 받음");
-        UserData user =  userManager.createUser();
+        UserData user =  userManager.createUser(exchange.getSourceAddress(),exchange.getSourcePort());
         Integer integer = user.getId();
         ServerMonitor.log("respond");
         exchange.respond(CoAP.ResponseCode.VALID,integer.toString());

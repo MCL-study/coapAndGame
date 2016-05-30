@@ -5,8 +5,9 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
+import org.eclipse.californium.core.server.resources.Resource;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by myks7 on 2016-03-15.
@@ -14,10 +15,15 @@ import java.util.List;
 class RoomManagerResource extends ConcurrentCoapResource {
     private RoomManager roomManager;
     private UserManager userManager;
+    private Map<String, Long> roomTimeLimitMap;
+
     RoomManagerResource(String name, RoomManager roomManager, UserManager userManager){
         super(name,SINGLE_THREADED);
+        roomTimeLimitMap = new HashMap<String, Long>();
         this.roomManager = roomManager;
-        this.userManager =userManager;
+        this.userManager = userManager;
+        Timer timer = new Timer();
+        timer.schedule(new RoomManagerResource.CheckTimeLimitTask(), 0, 1000);
     }
 
     @Override
@@ -32,9 +38,16 @@ class RoomManagerResource extends ConcurrentCoapResource {
             String payload = exchange.getRequestText();
             String[] ids = payload.split("/");
             ServerMonitor.log(Integer.parseInt(ids[0])+"번 게임공간 접속 요청 받음 = id : "+Integer.parseInt(ids[1]));
-            UserData userData = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
-            Room room = roomManager.enterRoom(Integer.parseInt(ids[0]),userData);
+            User user = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
+            Room room = roomManager.enterRoom(Integer.parseInt(ids[0]),user);
             if(room!=null){
+                String key = "game" + ids[0];
+                Resource gameObserveResource = getChild(key);
+                if(gameObserveResource == null){
+                    gameObserveResource = new GameObserveResource(key, room);
+                    add(gameObserveResource);
+                    roomTimeLimitMap.put(key,System.currentTimeMillis()+room.getTimeLimit()*1000);
+                }
                 exchange.respond(ResponseCode.VALID,room.getRoomConfig().getByteStream());
             }else{
                 exchange.respond(ResponseCode.NOT_FOUND);
@@ -58,5 +71,21 @@ class RoomManagerResource extends ConcurrentCoapResource {
         }
         ServerMonitor.log("게임공간 하나도 존재하지 않음");
         exchange.respond(ResponseCode.NOT_FOUND);
+    }
+
+    private class CheckTimeLimitTask extends TimerTask {
+        public void run() {
+            long currentTimeMillis = System.currentTimeMillis();
+
+            List<Map.Entry<String, Long>> entryList = new ArrayList<Map.Entry<String, Long>>(roomTimeLimitMap.entrySet());
+            for (Map.Entry<String, Long> temp : entryList) {
+                if(currentTimeMillis>temp.getValue()){
+                    GameObserveResource resource = (GameObserveResource) getChild(temp.getKey());
+                    resource.timeout();
+                    roomTimeLimitMap.remove(temp.getKey());
+                    ServerMonitor.log(temp.getKey()+"번 게임공간 Timeout");
+                }
+            }
+        }
     }
 }

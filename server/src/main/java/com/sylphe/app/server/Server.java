@@ -32,7 +32,8 @@ class Server extends CoapServer {
     Server(RoomManager roomManager, UserManager userManager) throws SocketException {
         add(new AccessManagerResource("AccessManager", userManager));
         add(new RoomManagerResource("RoomManager", roomManager,userManager));
-        add(new GameObserveResource("gameObserve", roomManager));
+
+//        add(new GameObserveResource("gameObserve", roomManager));
     }
 
     /**

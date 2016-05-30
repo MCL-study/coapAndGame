@@ -23,11 +23,11 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.*;
  * Created by myks7 on 2016-03-14.
  */
 class GameObserveResource extends ConcurrentCoapResource {
-    private RoomManager roomManager;
+    private Room room;
 
-    GameObserveResource(String name, RoomManager roomManager) {
+    GameObserveResource(String name, Room room) {
         super(name,SINGLE_THREADED);
-        this.roomManager = roomManager;
+        this.room = room;
         setObservable(true); // enable observing
         setObserveType(CoAP.Type.CON); // configure the notification type to CONs
         getAttributes().setObservable(); // mark observable in the Link-Format
@@ -43,6 +43,7 @@ class GameObserveResource extends ConcurrentCoapResource {
             //System.out.println("update obs..."+getName());
             // .. periodic update of the resource
             changed(); // notify all observers
+
         }
     }
 
@@ -51,30 +52,15 @@ class GameObserveResource extends ConcurrentCoapResource {
         exchange.setMaxAge(1); // the Max-Age value should match the update interval
       //  exchange.respond("update "+getName() +"  "+exchange.getRequestOptions().getAccept());
         int roomId = exchange.getRequestOptions().getAccept();
-        Room room = roomManager.searchRoom(roomId);
-        if(room!=null){
-            List<UserData> userList = room.getUserList();
-            LocationMessage locationMessage = new LocationMessage(roomId,userList.size(),UserData.getSize());
-            for(UserData data : userList){
-                locationMessage.addUserDataStream(data.getStream());
-            }
-            ServerMonitor.log(roomId+"번 게임공간"+ exchange.getSourceAddress()+"에게 총"+userList.size()+"개의 위치 정보 전송");
-            exchange.respond(VALID,locationMessage.getStream());
+        List<UserData> userList = room.getUserList();
+        LocationMessage locationMessage = new LocationMessage(roomId,userList.size(),UserData.getSize());
+        for(UserData data : userList){
+            locationMessage.addUserDataStream(data.getStream());
         }
+        ServerMonitor.log(roomId+"번 게임공간"+ exchange.getSourceAddress()+"에게 총"+userList.size()+"개의 위치 정보 전송");
+        exchange.respond(VALID,locationMessage.getStream());
         //exchange.respond(NOT_IMPLEMENTED);
-/*        System.out.println("coap:/"+exchange.getSourceAddress()+":"+exchange.getSourcePort()+"/listener");
-        CoapClient client = new CoapClient("coap:/"+exchange.getSourceAddress()+":"+5683+"/listener");
-        client.get(new CoapHandler() {
-            public void onLoad(CoapResponse response) {
-                System.out.println("aaa");
-                System.out.println(response.getResponseText());
 
-            }
-
-            public void onError() {
-
-            }
-        });*/
     }
 
     @Override
@@ -94,7 +80,8 @@ class GameObserveResource extends ConcurrentCoapResource {
             UserData userData = userDataList.get(0);
             int roomId = locationMessage.getRoomId();
             ServerMonitor.log(roomId+"번 게임공간 id:"+userData.getId()+" USER_DATA 메세지 받음 "+userData.getLocData().getLat()+","+userData.getLocData().getLng());
-            roomManager.updateUserLocation(roomId, userData);
+            room.searchUserAndUpdateLoc(userData);
+         //   roomManager.updateUserLocation(roomId, userData);
             exchange.respond(VALID);
         }else if(contentFormat == MsgType.CATCH_FUGITIVE){
             String requestText = exchange.getRequestText();
@@ -102,7 +89,8 @@ class GameObserveResource extends ConcurrentCoapResource {
             int roomId = Integer.parseInt(split[0]);
             int fugitiveId = Integer.parseInt(split[1]);
             ServerMonitor.log(roomId+"번 게임공간 CATCH_FUGITIVE 메세지 받음 id:"+fugitiveId+"잡힘");
-            roomManager.dieUser(roomId,fugitiveId);
+            room.dieUser(fugitiveId);
+         //   roomManager.dieUser(roomId,fugitiveId);
             exchange.respond(VALID);
         }else if(contentFormat == MsgType.DIE_PLAYER){
             String requestText = exchange.getRequestText();
@@ -110,7 +98,8 @@ class GameObserveResource extends ConcurrentCoapResource {
             int roomId = Integer.parseInt(split[0]);
             Integer playerId = Integer.parseInt(split[1]);
             ServerMonitor.log(roomId+"번 게임공간 DIE_PLAYER 메세지 받음 id:"+playerId+"죽음");
-            roomManager.dieUser(roomId,playerId);
+            room.dieUser(playerId);
+          //  roomManager.dieUser(roomId,playerId);
             exchange.respond(DELETED);
         }else if(contentFormat == MsgType.EXIT_USER){
             String requestText = exchange.getRequestText();
@@ -118,11 +107,14 @@ class GameObserveResource extends ConcurrentCoapResource {
             int roomId = Integer.parseInt(split[0]);
             Integer playerId = Integer.parseInt(split[1]);
             ServerMonitor.log(roomId+"번 게임공간 EXIT_USER 메세지 받음 id:"+playerId+" 나감");
-            roomManager.exitUser(roomId,playerId);
+            room.exitUser(playerId);
+          //  roomManager.exitUser(roomId,playerId);
             exchange.respond(DELETED);
         }
- //       exchange.respond(NOT_IMPLEMENTED);
-//      changed(); // notify all observers
-
+    }
+    void timeout(){
+      /*  System.out.println("coap:/"+exchange.getSourceAddress()+":"+exchange.getSourcePort()+"/listener");
+        CoapClient client = new CoapClient("coap:/"+exchange.getSourceAddress()+":"+5683+"/listener");
+*/
     }
 }
