@@ -56,7 +56,7 @@ public class ListenerServerService extends Service {
 
         server.start();
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

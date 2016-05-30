@@ -19,6 +19,7 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
  * Created by myks7 on 2016-03-15.
  */
 public abstract class GameClient{
+    private final URI uri;
     private GpsInfo gpsInfo;
     private CoapObserveRelation relation;
     private CoapClient client;
@@ -27,11 +28,12 @@ public abstract class GameClient{
     private boolean aliveFlag;
 
     public GameClient(URI uri, GpsInfo gpsInfo){
-        client = new CoapClient(uri + "/gameObserve");
+        this.uri = uri;
         this.gpsInfo = gpsInfo;
     }
 
     public void start(int roomId, int id,UserProperties userProperties) {
+        client = new CoapClient(uri + "/RoomManager/game"+roomId);
         aliveFlag=true;
         this.roomId = roomId;
         player = new UserData(id,userProperties);
