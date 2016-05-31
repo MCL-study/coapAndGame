@@ -44,7 +44,6 @@ import java.util.List;
 
 public class AppActivity extends Cocos2dxActivity {
     private Cocos2dxGLSurfaceView mGLView;
-    static public Handler handler;
     private static GpsInfo gpsInfo;
     private static AccessClient accessClient;
     private static RoomConnector roomConnector;
@@ -54,7 +53,6 @@ public class AppActivity extends Cocos2dxActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startService(new Intent(this, ListenerServerService.class));
         setContentView(R.layout.main);
         mGLView = (Cocos2dxGLSurfaceView) findViewById(R.id.game_gl_surfaceView);
         //** ScrollView rendering problem fix
@@ -70,6 +68,7 @@ public class AppActivity extends Cocos2dxActivity {
         try {
         //    uri = new URI("coap://117.17.102.28");
             uri = new URI("coap://192.168.0.29");
+//            uri = new URI("coap://172.30.1.4");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -80,7 +79,6 @@ public class AppActivity extends Cocos2dxActivity {
 
     @Override
     protected void onDestroy() {
-        stopService(new Intent(this, ListenerServerService.class));
         super.onDestroy();
     }
 
