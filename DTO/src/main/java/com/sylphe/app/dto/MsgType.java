@@ -14,6 +14,8 @@ public class MsgType {
     public static final int CATCH_FUGITIVE = 109;
     public static final int DIE_PLAYER = 110;
     public static final int EXIT_USER =111;
+   // public static final int INIT_GAME =112;
+    public static final int TIME_OUT =113;
     //--delete
    // public static final int RESPOND_ID = 102;
    // public static final int MAKE_ROOM_OK= 101;

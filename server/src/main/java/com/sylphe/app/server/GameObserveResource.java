@@ -9,9 +9,11 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapResponse;
 import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.coap.Response;
+import org.eclipse.californium.core.observe.ObserveRelation;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,7 +54,7 @@ class GameObserveResource extends ConcurrentCoapResource {
         exchange.setMaxAge(1); // the Max-Age value should match the update interval
       //  exchange.respond("update "+getName() +"  "+exchange.getRequestOptions().getAccept());
         int roomId = exchange.getRequestOptions().getAccept();
-        List<UserData> userList = room.getUserList();
+        List<User> userList = room.getUserList();
         LocationMessage locationMessage = new LocationMessage(roomId,userList.size(),UserData.getSize());
         for(UserData data : userList){
             locationMessage.addUserDataStream(data.getStream());
@@ -71,7 +73,6 @@ class GameObserveResource extends ConcurrentCoapResource {
 
     @Override
     public void handlePUT(CoapExchange exchange) {
-
         int contentFormat = exchange.getRequestOptions().getContentFormat();
         if(contentFormat == MsgType.USER_DATA){
             byte[] requestPayload = exchange.getRequestPayload();
@@ -113,8 +114,12 @@ class GameObserveResource extends ConcurrentCoapResource {
         }
     }
     void timeout(){
-      /*  System.out.println("coap:/"+exchange.getSourceAddress()+":"+exchange.getSourcePort()+"/listener");
-        CoapClient client = new CoapClient("coap:/"+exchange.getSourceAddress()+":"+5683+"/listener");
-*/
+        List<User> userList = room.getUserList();
+        for(User user : userList){
+            CoapClient client = new CoapClient("coap:/"+user.getSourceAddress()+":"+5683+"/listener");
+            client.put("",MsgType.TIME_OUT);
+        }
+        room.timeout();
+        clearObserveRelations();
     }
 }

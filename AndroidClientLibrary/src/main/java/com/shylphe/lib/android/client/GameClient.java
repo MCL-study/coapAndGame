@@ -2,12 +2,15 @@ package com.shylphe.lib.android.client;
 
 import android.util.Log;
 import com.sylphe.app.dto.*;
-import org.eclipse.californium.core.CoapClient;
-import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapObserveRelation;
-import org.eclipse.californium.core.CoapResponse;
+import org.eclipse.californium.core.*;
 import org.eclipse.californium.core.coap.CoAP.ResponseCode;
+import org.eclipse.californium.core.network.CoapEndpoint;
+import org.eclipse.californium.core.network.EndpointManager;
+import org.eclipse.californium.core.server.ServerInterface;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;
 
@@ -18,7 +21,7 @@ import static org.eclipse.californium.core.coap.CoAP.ResponseCode.VALID;
 /**
  * Created by myks7 on 2016-03-15.
  */
-public abstract class GameClient{
+public abstract class GameClient {
     private final URI uri;
     private GpsInfo gpsInfo;
     private CoapObserveRelation relation;
@@ -26,14 +29,24 @@ public abstract class GameClient{
     private int roomId;
     private UserData player;
     private boolean aliveFlag;
+    private CoapServer listenerServer;
 
     public GameClient(URI uri, GpsInfo gpsInfo){
         this.uri = uri;
         this.gpsInfo = gpsInfo;
+        initServer();
+    }
+
+    private void initServer() {
+        listenerServer = new CoapServer();
+        addEndpoints(listenerServer);
+        listenerServer.add(new GameListenerResource());
+
     }
 
     public void start(int roomId, int id,UserProperties userProperties) {
-        client = new CoapClient(uri + "/RoomManager/game"+roomId);
+        listenerServer.start();
+        client = new CoapClient(uri + "/RoomManager/"+roomId);
         aliveFlag=true;
         this.roomId = roomId;
         player = new UserData(id,userProperties);
@@ -44,6 +57,7 @@ public abstract class GameClient{
         aliveFlag=false;
         client.put(roomId + "/" + player.getId(), MsgType.EXIT_USER);
         relation.reactiveCancel();
+        listenerServer.destroy();
     }
 
     class handler implements CoapHandler {
@@ -115,6 +129,25 @@ public abstract class GameClient{
         }
     }
 
+    private void addEndpoints(CoapServer server) {
+        for (InetAddress addr : EndpointManager.getEndpointManager().getNetworkInterfaces()) {
+            // only binds to IPv4 addresses and localhost
+            if (addr instanceof Inet4Address || addr.isLoopbackAddress()) {
+                InetSocketAddress bindToAddress = new InetSocketAddress(addr, 5683);
+                server.addEndpoint(new CoapEndpoint(bindToAddress));
+            }
+        }
+    }
+    private class GameListenerResource extends ListenerResource{
+
+        @Override
+        void onTimeout() {
+            close();
+            onGameTimeout();
+        }
+    }
+
+    protected abstract void onGameTimeout();
     protected abstract void finishNotifyLocation(double[] locData);
     protected abstract void finishUpdateAllUserData(UserData[] locData);
 }

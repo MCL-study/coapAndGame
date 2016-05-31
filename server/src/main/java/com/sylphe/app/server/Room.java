@@ -47,7 +47,7 @@ class Room {
         userMap.put(user.getId(),user);
     }
 
-    private UserData searchUser(int userId){
+    private User searchUser(int userId){
 /*        for(UserData userData : userList){
             if(userData.getId() == userId){
                 return userData;
@@ -67,8 +67,8 @@ class Room {
         }
     }
 
-    List<UserData> getUserList() {
-        return new ArrayList<UserData>(userMap.values());
+    List<User> getUserList() {
+        return new ArrayList<User>(userMap.values());
     }
 
     void dieUser(int userId){
@@ -107,5 +107,12 @@ class Room {
 
     int getScale() {
         return scale;
+    }
+
+    void timeout(){
+        List<User> userList = getUserList();
+        for(User user : userList){
+            user.setUserProperties(UserProperties.NOT_DEFINE);
+        }
     }
 }

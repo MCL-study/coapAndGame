@@ -21,4 +21,12 @@ public class User extends UserData {
         this.sourceAddress=sourceAddress;
         this.sourcePort = sourcePort;
     }
+
+    public InetAddress getSourceAddress() {
+        return sourceAddress;
+    }
+
+    public int getSourcePort() {
+        return sourcePort;
+    }
 }

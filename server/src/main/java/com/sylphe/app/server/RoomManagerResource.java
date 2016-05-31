@@ -15,11 +15,11 @@ import java.util.*;
 class RoomManagerResource extends ConcurrentCoapResource {
     private RoomManager roomManager;
     private UserManager userManager;
-    private Map<String, Long> roomTimeLimitMap;
+    private Map<Integer, Long> roomTimeLimitMap;
 
     RoomManagerResource(String name, RoomManager roomManager, UserManager userManager){
         super(name,SINGLE_THREADED);
-        roomTimeLimitMap = new HashMap<String, Long>();
+        roomTimeLimitMap = new HashMap<Integer, Long>();
         this.roomManager = roomManager;
         this.userManager = userManager;
         Timer timer = new Timer();
@@ -41,12 +41,16 @@ class RoomManagerResource extends ConcurrentCoapResource {
             User user = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
             Room room = roomManager.enterRoom(Integer.parseInt(ids[0]),user);
             if(room!=null){
-                String key = "game" + ids[0];
-                Resource gameObserveResource = getChild(key);
+                Integer key = Integer.valueOf(ids[0]);
+                Resource gameObserveResource = getChild(key.toString());
                 if(gameObserveResource == null){
-                    gameObserveResource = new GameObserveResource(key, room);
+                    gameObserveResource = new GameObserveResource(key.toString(), room);
                     add(gameObserveResource);
-                    roomTimeLimitMap.put(key,System.currentTimeMillis()+room.getTimeLimit()*1000);
+                    Long timeLimit = roomTimeLimitMap.get(key);
+                    if(timeLimit==null){
+                        long value = System.currentTimeMillis() + room.getTimeLimit() * 1000;
+                        roomTimeLimitMap.put(key, value);
+                    }
                 }
                 exchange.respond(ResponseCode.VALID,room.getRoomConfig().getByteStream());
             }else{
@@ -77,13 +81,15 @@ class RoomManagerResource extends ConcurrentCoapResource {
         public void run() {
             long currentTimeMillis = System.currentTimeMillis();
 
-            List<Map.Entry<String, Long>> entryList = new ArrayList<Map.Entry<String, Long>>(roomTimeLimitMap.entrySet());
-            for (Map.Entry<String, Long> temp : entryList) {
+            List<Map.Entry<Integer, Long>> entryList = new ArrayList<Map.Entry<Integer, Long>>(roomTimeLimitMap.entrySet());
+            for (Map.Entry<Integer, Long> temp : entryList) {
                 if(currentTimeMillis>temp.getValue()){
-                    GameObserveResource resource = (GameObserveResource) getChild(temp.getKey());
+                    GameObserveResource resource = (GameObserveResource) getChild(temp.getKey().toString());
                     resource.timeout();
                     roomTimeLimitMap.remove(temp.getKey());
                     ServerMonitor.log(temp.getKey()+"번 게임공간 Timeout");
+                    delete(resource);
+                    roomManager.deleteRoom(temp.getKey());
                 }
             }
         }

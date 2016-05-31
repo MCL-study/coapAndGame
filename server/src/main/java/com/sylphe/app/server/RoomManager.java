@@ -62,4 +62,7 @@ class RoomManager {
         Room room = searchRoom(roomId);
         room.exitUser(userId);
     }
+    void deleteRoom(int roomId){
+        roomMap.remove(roomId);
+    }
 }
