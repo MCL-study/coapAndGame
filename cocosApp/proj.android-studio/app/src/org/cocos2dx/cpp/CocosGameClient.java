@@ -22,6 +22,12 @@ class CocosGameClient  extends GameClient{
     private UserData[] locationDatas;
 
     @Override
+    protected void onGameTimeout() {
+        System.out.println("timeout!!!");
+        onTimeout();
+    }
+
+    @Override
     protected void finishNotifyLocation(double[] locData) {
         locationData=locData;
         mGLView.queueEvent(new Runnable() {
@@ -43,6 +49,7 @@ class CocosGameClient  extends GameClient{
         });
     }
 
+    private native void onTimeout();
     private native void finishNotifyLocationNative(double[] locData);
     private native void finishUpdateAllUserDataNative(UserData[] locData);
 
