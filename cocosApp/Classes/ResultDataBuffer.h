@@ -22,6 +22,11 @@ public:
 		dataFlag = true;
 		str += "[ID:" + CustomUtil::toString(fugitiveID) + "]을 잡았습니다.\n";
 	}
+	
+	void appendTimeoutMessage() {
+		dataFlag = true;
+		str += "제한시간이 종료 되었습니다.\n";
+	}
 
 	static ResultDataBuffer* getInstance() {
 		if (instance == NULL)

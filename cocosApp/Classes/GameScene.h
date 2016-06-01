@@ -12,16 +12,15 @@ private:
 	std::list<UserDataSprite*> userList;
 	UserDataSprite* playerSprite;
 	RoomConfig* enterRoom(int roomid, int  id, int  properties);
-	void startGame(int roomid, int  id, int  properties);
+	bool startGame(int roomid, int  id, int  properties);
 	void requestStartGame(int roomid, int id, int properties);
-	void close();
-	void replaceHallScene();
+
 
 	void updatePosition();
 
 	float fProgressTime;
 	void startTimer();
-	void endTimer();
+
 	void onTimer(float dt);
 
 
@@ -59,7 +58,9 @@ public:
 	CREATE_FUNC(GameClient);
 	~GameClient();
 	virtual void update(float delta);
-
+	void endTimer();
+	void close();
+	void replaceHallScene();
 	void addUserData(UserData* user);
 	void setPlayerLoc(LocData loc);
 };

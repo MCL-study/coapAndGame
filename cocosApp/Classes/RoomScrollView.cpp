@@ -1,9 +1,11 @@
 #include "RoomScrollView.h"
 #include "HallPopupScene.h"
+#include "FrontHallScene.h"
+
 USING_NS_CC;
 USING_NS_CC::ui;
 
-RoomScrollView::RoomScrollView(Layer* layer,Size size)
+RoomScrollView::RoomScrollView(FrontHall* layer,Size size)
 {
 	log("RoomScrollView call");
 	view = ui::ScrollView::create();
@@ -16,15 +18,11 @@ RoomScrollView::RoomScrollView(Layer* layer,Size size)
 void RoomScrollView::updateRoomConfigs(std::list<RoomConfig*>*  roomList)
 {
 	log("updateRoomConfigs call");
+	clearRoomConfigs();
 	if (roomList->size() != 0) {
 		Button* btn = createRoomButton(roomList->front());
 		Vec2 size = btn->getContentSize();
 		view->setInnerContainerSize(Size(size.x * 2, size.y * ceil(roomList->size()/2+1)));
-		while (buttonList.size() != 0) {
-			Button* btn = buttonList.front();
-			view->removeChild(btn);
-			buttonList.pop_front();
-		}
 		for (int i = roomList->size(); i >0; i--) {
 			Button* btn = createRoomButton(roomList->front());
 			btn->setAnchorPoint(Vec2(0.0, 0.0));
@@ -34,6 +32,15 @@ void RoomScrollView::updateRoomConfigs(std::list<RoomConfig*>*  roomList)
 			buttonList.push_back(btn);
 			roomList->pop_front();
 		}
+	}
+}
+
+void RoomScrollView::clearRoomConfigs()
+{
+	while (buttonList.size() != 0) {
+		Button* btn = buttonList.front();
+		view->removeChild(btn);
+		buttonList.pop_front();
 	}
 }
 

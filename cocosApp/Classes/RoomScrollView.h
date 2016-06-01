@@ -6,16 +6,16 @@
 
 class RoomScrollView {
 private:
-	cocos2d::Layer* superView;
+	class FrontHall* superView;
 	cocos2d::ui::ScrollView* view;
 	std::list<cocos2d::ui::Button*> buttonList;
 
 	cocos2d::ui::Button* createRoomButton(const RoomConfig* roomConfig);
 	void onBtnClickListener(cocos2d::Ref* pSender, int roomid);
 public:
-	~RoomScrollView() { cocos2d::log("~RoomScrollView"); }
-	RoomScrollView(cocos2d::Layer* layer,cocos2d::Size size);
-	void updateRoomConfigs( std::list<RoomConfig*>*  roomList);
+	RoomScrollView(class FrontHall* layer,cocos2d::Size size);
+	void updateRoomConfigs(std::list<RoomConfig*>*  roomList);
+	void clearRoomConfigs();
 	void setPosition(cocos2d::Vec2 pos) { view->setPosition(pos); }
 };
 
