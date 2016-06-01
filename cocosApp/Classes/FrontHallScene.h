@@ -1,14 +1,12 @@
-﻿#ifndef __HELLOWORLD_SCENE_H__
-#define __HELLOWORLD_SCENE_H__
-
+﻿#ifndef __FRONT_HALL_SCENE_H__
+#define __FRONT_HALL_SCENE_H__
 #include "cocos2d.h"
 #include "RoomConfig.h"
-#include "RoomScrollView.h"
 
 class FrontHall : public cocos2d::Layer
 {
 private:
-	RoomScrollView* scrollView;
+	class RoomScrollView* scrollView;
 	cocos2d::Label* roomClearLabel;
 	void checkResult();
     virtual bool init();
@@ -24,4 +22,4 @@ public:
 	void refreshRoomCallback(cocos2d::Ref* pSender);
 };
 
-#endif // __HELLOWORLD_SCENE_H__
+#endif

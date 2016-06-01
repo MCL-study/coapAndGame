@@ -38,9 +38,10 @@ class RoomManagerResource extends ConcurrentCoapResource {
             String payload = exchange.getRequestText();
             String[] ids = payload.split("/");
             ServerMonitor.log(Integer.parseInt(ids[0])+"번 게임공간 접속 요청 받음 = id : "+Integer.parseInt(ids[1]));
-            User user = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
-            Room room = roomManager.enterRoom(Integer.parseInt(ids[0]),user);
+            Room room = roomManager.searchRoom(Integer.parseInt(ids[0]));
             if(room!=null){
+                User user = userManager.updateUserUserProperties(Integer.parseInt(ids[1]), UserProperties.valueOf(Integer.parseInt(ids[2])));
+                room.addUser(user);
                 Integer key = Integer.valueOf(ids[0]);
                 Resource gameObserveResource = getChild(key.toString());
                 if(gameObserveResource == null){
@@ -84,12 +85,12 @@ class RoomManagerResource extends ConcurrentCoapResource {
             List<Map.Entry<Integer, Long>> entryList = new ArrayList<Map.Entry<Integer, Long>>(roomTimeLimitMap.entrySet());
             for (Map.Entry<Integer, Long> temp : entryList) {
                 if(currentTimeMillis>temp.getValue()){
+                    roomManager.deleteRoom(temp.getKey());
+                    roomTimeLimitMap.remove(temp.getKey());
                     GameObserveResource resource = (GameObserveResource) getChild(temp.getKey().toString());
                     resource.timeout();
-                    roomTimeLimitMap.remove(temp.getKey());
                     ServerMonitor.log(temp.getKey()+"번 게임공간 Timeout");
                     delete(resource);
-                    roomManager.deleteRoom(temp.getKey());
                 }
             }
         }

@@ -57,7 +57,7 @@ public abstract class GameClient {
         aliveFlag=false;
         client.put(roomId + "/" + player.getId(), MsgType.EXIT_USER);
         relation.reactiveCancel();
-        listenerServer.destroy();
+        listenerServer.stop();
     }
 
     class handler implements CoapHandler {

@@ -11,7 +11,7 @@ private:
 	int makeRoom();
 	int maxGameMember = 99999;
 	int scale = 2000;
-	int timeLimit = 99999;
+	int timeLimit = 20;
 public:
 	void showPopup(FrontHall* parrentLayer);
 	static cocos2d::Scene* createScene();
