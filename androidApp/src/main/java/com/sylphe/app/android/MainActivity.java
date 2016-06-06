@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(roomConfig!=null){
             LocalRoomConfig localRoomConfig = new LocalRoomConfig(roomConfig);
-            Intent intent = new Intent(this,GameClientActivity.class);
+            //Intent intent = new Intent(this, GameClientActivity.class);
+            Intent intent = new Intent(this, augmentedReality.MainActivity.class);
             intent.putExtra("userState",userState);
             intent.putExtra("localRoomConfig",localRoomConfig);
             intent.putExtra("uri", uri.toString());
