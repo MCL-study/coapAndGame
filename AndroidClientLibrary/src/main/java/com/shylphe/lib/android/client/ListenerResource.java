@@ -2,6 +2,7 @@ package com.shylphe.lib.android.client;
 
 import com.sylphe.app.dto.MsgType;
 import org.eclipse.californium.core.CoapResource;
+import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 
 /**
@@ -23,6 +24,7 @@ abstract class ListenerResource extends CoapResource {
             System.out.println("time out");
             onTimeout();
         }
+        exchange.respond(CoAP.ResponseCode.VALID);
     }
     abstract void onTimeout();
 

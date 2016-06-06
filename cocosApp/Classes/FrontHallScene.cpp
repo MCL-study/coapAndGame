@@ -3,6 +3,7 @@
 #include "platform\android\jni\JniHelper.h"
 #include "RoomConfigJNIUtil.h"
 #endif
+#include "RoomScrollView.h"
 #include "MakeRoomPopupScene.h"
 #include "ResultDataBuffer.h"
 #include "ResultPopupScene.h"
@@ -117,6 +118,7 @@ void FrontHall::refreshRoomCallback(Ref* pSender) {
 	log("refreshRoomCalback call");
 	if(roomList == NULL){
 		roomClearLabel->setVisible(true);
+		scrollView->clearRoomConfigs();
 	}else if (roomList->size() != 0) {
 		roomClearLabel->setVisible(false);
 		scrollView->updateRoomConfigs(roomList);

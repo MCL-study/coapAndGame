@@ -31,7 +31,6 @@ public class AccessClient {
         }else{
             System.out.println("액세스 서버 무응답");
         }
-
         return null;
     }
     public void close(){

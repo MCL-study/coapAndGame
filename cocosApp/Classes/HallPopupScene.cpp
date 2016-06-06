@@ -28,8 +28,13 @@ void HallPopup::startGame()
 {
 	auto scene = Scene::create();
 	gameClient = GameClient::create();
-	scene->addChild(gameClient);
-	Director::getInstance()->pushScene(scene);
+	if (gameClient != nullptr) {
+		scene->addChild(gameClient);
+		Director::getInstance()->pushScene(scene);
+	}
+	else {
+		closePopup();
+	}
 }
 
 cocos2d::Scene * HallPopup::createScene()
@@ -89,7 +94,7 @@ bool HallPopup::init()
 	return true;
 }
 
-void HallPopup::showPopup(cocos2d::Layer * _parrentLayer)
+void HallPopup::showPopup(FrontHall* _parrentLayer)
 {
 	//팝업을 생성하고 실제로 화면에 보이개할때 부모 Layer는 이벤트를 못받도록 설정
 	this->parrentLayer = _parrentLayer;

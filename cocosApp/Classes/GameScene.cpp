@@ -28,7 +28,9 @@ bool GameClient::init()
 
 	initSprite(id, properties);
 
-	startGame(roomid,id, properties);
+	if (!startGame(roomid, id, properties)) {
+		return false;
+	}
 
 	EventDispatcher* dispatcher = Director::getInstance()->getEventDispatcher();
 	auto listener = EventListenerTouchAllAtOnce::create();
@@ -144,16 +146,18 @@ void GameClient::onEnter()
 	startTimer();
 }
 
-void GameClient::startGame(int roomid, int  id, int  properties) {
+bool GameClient::startGame(int roomid, int  id, int  properties) {
 	RoomConfig* roomConfig= enterRoom(roomid, id, properties);
 	if (roomConfig == nullptr) {
 		log("enterRoom error");
+		return false;
 	}
 	else {
 		requestStartGame(roomid, id, properties);
 		roomCenter = roomConfig->getCenterLoc();
 		roomScale = roomConfig->getScale();
 		delete roomConfig;
+		return true;
 	}
 }
 
@@ -293,9 +297,9 @@ void GameClient::onTouchesMoved(const std::vector<Touch*>& touches, Event * unus
 		}else {
 			auto currentTouchLength = (touches.front()->getLocation() - touches.back()->getLocation()).length();
 			if (beforeTouchLength > currentTouchLength)
-				pixelPerMeter *= 0.99f;
+				pixelPerMeter *= 0.97f;
 			else if(beforeTouchLength < currentTouchLength)
-				pixelPerMeter *= 1.01f;
+				pixelPerMeter *= 1.03f;
 			beforeTouchLength = currentTouchLength;
 		}
 	}
@@ -385,6 +389,22 @@ void Java_org_cocos2dx_cpp_CocosGameClient_finishUpdateAllUserDataNative(JNIEnv*
 	}
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
+void Java_org_cocos2dx_cpp_CocosGameClient_onTimeout(JNIEnv* ent, jobject obj) {
+	if (gameClient != NULL) {
+		log("call c onTimeout");
+		if (gameClient != NULL) {
+			ResultDataBuffer* buffer = ResultDataBuffer::getInstance();
+			buffer->appendTimeoutMessage();
+			gameClient->endTimer();
+			gameClient->close();
+			gameClient->replaceHallScene();
+		}
+	}
+}
+
 #endif
 
 #include "RoomConfigJNIUtil.h"
@@ -399,6 +419,9 @@ RoomConfig* GameClient::enterRoom(int roomid, int  id, int  properties) {
 		, "enterRoom"
 		, "(III)Lcom/sylphe/app/dto/RoomConfig;")) {
 		jobj = (jobject)t.env->CallStaticObjectMethod(t.classID, t.methodID, roomid, id, properties);
+
+		if (jobj == NULL)
+			return nullptr;
 
 		RoomCfgJNIUtil *roomUtil = RoomCfgJNIUtil::getInstance();
 		

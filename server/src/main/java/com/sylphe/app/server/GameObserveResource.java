@@ -53,13 +53,13 @@ class GameObserveResource extends ConcurrentCoapResource {
     public void handleGET(CoapExchange exchange) {
         exchange.setMaxAge(1); // the Max-Age value should match the update interval
       //  exchange.respond("update "+getName() +"  "+exchange.getRequestOptions().getAccept());
-        int roomId = exchange.getRequestOptions().getAccept();
+  //      int roomId = exchange.getRequestOptions().getAccept();
         List<User> userList = room.getUserList();
-        LocationMessage locationMessage = new LocationMessage(roomId,userList.size(),UserData.getSize());
+        LocationMessage locationMessage = new LocationMessage(room.getRoomId(),userList.size(),UserData.getSize());
         for(UserData data : userList){
             locationMessage.addUserDataStream(data.getStream());
         }
-        ServerMonitor.log(roomId+"번 게임공간"+ exchange.getSourceAddress()+"에게 총"+userList.size()+"개의 위치 정보 전송");
+        ServerMonitor.log(room.getRoomId()+"번 게임공간"+ exchange.getSourceAddress()+"에게 총"+userList.size()+"개의 위치 정보 전송");
         exchange.respond(VALID,locationMessage.getStream());
         //exchange.respond(NOT_IMPLEMENTED);
 
