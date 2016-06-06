@@ -63,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void login() {
-        int id = accessClient.login();
+        Integer id = accessClient.login();
+        if(id == null){
+            Toast.makeText(this,"login 실패 : 서버 관리자에게 문의하세요.",Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         userState.setId( id);
         Toast.makeText(this,"login success id : "+id,Toast.LENGTH_SHORT).show();
     }
@@ -73,9 +78,11 @@ public class MainActivity extends AppCompatActivity {
         btnMakeRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Integer roomId = roomConnector.makeRoom(gpsInfo.getLocData(), 10, 600,9999);
+                int scale = 600;
+                int timeLimit = 9999;
+                Integer roomId = roomConnector.makeRoom(gpsInfo.getLocData(), 10, scale, timeLimit);
                 if(roomId != null){
-                    Toast.makeText(MainActivity.this, "성공 roomid : "+roomId.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "성공 roomid : "+roomId+"범위:"+scale+"m 제한시간:"+timeLimit+"초", Toast.LENGTH_SHORT).show();
                 }
             }
         });

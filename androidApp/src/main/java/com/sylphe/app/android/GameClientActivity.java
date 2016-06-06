@@ -175,6 +175,12 @@ public class GameClientActivity extends AppCompatActivity {
         }
 
         @Override
+        protected void onGameTimeout() {
+            close();
+            finish();
+        }
+
+        @Override
         protected void finishNotifyLocation(double[] locData) {
             player.setLocData(new LocData(locData[0],locData[1]));
             checkCollision();
